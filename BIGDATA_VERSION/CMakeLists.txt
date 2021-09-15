@@ -27,6 +27,7 @@ add_executable(EMAFBIGDATA
         data/matrix.h
         data/stack3D.cpp
         data/stack3D.h
+        evaluation/alignmentEvaluation.cpp
         evaluation/alignmentEvaluation.h
         file/mrcFile.cpp
         file/mrcFile.h
@@ -38,6 +39,7 @@ add_executable(EMAFBIGDATA
         utils/alignFFT.h
         utils/fft.cpp
         utils/fft.h
+        utils/noise.cpp
         utils/noise.h
         utils/particle.h
         utils/polar.cpp
