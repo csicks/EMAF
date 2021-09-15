@@ -1,4 +1,4 @@
-# EMAF: A Fast Cryo-EM Image Alignment Algorithm using Power Spectrum Features
+# EMAF: Fast Cryo-EM Image Alignment Algorithm using Power Spectrum Features
 
 ## Introduction
 - EMAF is an alignment algorithm program which aims at cryo-EM two-dimensional particle images. The program is implemented in C++ under C++11 standard. Some other alignment methods like Fourier-Mellin transform and XMIPP alignment are also re-implemented and included in this program. Both source code and complied program are available.
