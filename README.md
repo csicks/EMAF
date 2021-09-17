@@ -32,3 +32,6 @@ make
   4. For synthetic Apoferritin datasets, EMAF-MD with low pass filter width `s/15` is suggested.
   5. For real GroEL datasets, EMAF-MD with low pass filter width s/10 is suggested.
   6. For real EMPIAR 10398 datasets, EMAF-MD with low pass filter width `s/20` is suggested.
+
+## Others
+- Please refer to http://www.csbio.sjtu.edu.cn/bioinf/EMAF/ for some datasets and more information.
