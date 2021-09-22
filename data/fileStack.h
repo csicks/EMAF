@@ -12,7 +12,6 @@
 #ifndef ALIGNMENT_FILESTACK_H
 #define ALIGNMENT_FILESTACK_H
 
-
 #include "mrcFile.h"
 #include "stack3D.h"
 #include <vector>
@@ -22,11 +21,10 @@
 #include <zconf.h>
 #include <sys/stat.h>
 
-
 std::vector<std::string> split(const std::string &line, char symbol);
 
-
-class fileStack {
+class fileStack
+{
 public:
     std::vector<std::string> names;
     std::string auxFolder;
@@ -49,9 +47,6 @@ public:
     void append(const std::string &path);
 
     void append(const imageReal<float> &img);
-
-
 };
-
 
 #endif //ALIGNMENT_FILESTACK_H
