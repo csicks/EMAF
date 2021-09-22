@@ -4,7 +4,7 @@
  *
  * Copyright (C) 2021 Pattern Recognition and Bioinformatics Group, Shanghai Jiao Tong University
  *
- * Licensed under the MIT License (see LICENSE for details)
+ * Licensed under the GNU General Public License v3.0 (see LICENSE for details)
  *
  * All comments concerning this program package may be sent to the e-mail address 'yxchen11@sjtu.edu.cn'
  ***************************************************************************/
@@ -12,23 +12,22 @@
 #ifndef ALIGNMENT_ALIGNFFT_H
 #define ALIGNMENT_ALIGNFFT_H
 
-
 #include "image2D.h"
 #include "fft.h"
 #include "stack3D.h"
 #include "polar.h"
 #include "fileStack.h"
 
-
 #define ALIGN_TH 1
 
-
-struct phi {
+struct phi
+{
     double ang = 0;
     double x = 0;
     double y = 0;
 
-    phi operator+(phi p) const {
+    phi operator+(phi p) const
+    {
         phi r;
         r.ang = ang + p.ang;
         r.x = x + p.x;
@@ -38,13 +37,13 @@ struct phi {
 
     phi() = default;
 
-    phi(const std::initializer_list<double> &initList) {
+    phi(const std::initializer_list<double> &initList)
+    {
         const double *p = initList.begin();
         ang = *p++;
         x = *p++;
         y = *p++;
     }
-
 };
 
 phi shiftFFT(const imageReal<float> &imgX, const imageReal<float> &imgC);
@@ -87,13 +86,12 @@ imageReal<float> initReference(const stackReal<float> &stk);
 
 imageReal<float> initReference(const fileStack &stk);
 
-void refinement(stackReal<float> &stk, imageReal<float> &ref, phi func(const imageReal<float> &imgX, const imageReal<float> &imgC), bool updateFlag=true);
+void refinement(stackReal<float> &stk, imageReal<float> &ref, phi func(const imageReal<float> &imgX, const imageReal<float> &imgC), bool updateFlag = true);
 
 void refinement(stackReal<float> &stk, imageReal<float> &ref, phi func(const imageReal<float> &imgX, const imageReal<float> &imgC, int width, bool fineFlag), int width,
-                bool fineFlag = false, bool updateFlag=true);
+                bool fineFlag = false, bool updateFlag = true);
 
-void refinement(stackReal<float> &stk, imageReal<float> &ref, phi func(const imageReal<float> &imgX, const imageReal<float> &imgC, int outWidth, int inWidth, float th,
-                                                                       bool fineFlag), int outWidth, int inWidth = -1, float th = -1, bool fineFlag = false, bool updateFlag=true);
+void refinement(stackReal<float> &stk, imageReal<float> &ref, phi func(const imageReal<float> &imgX, const imageReal<float> &imgC, int outWidth, int inWidth, float th, bool fineFlag), int outWidth, int inWidth = -1, float th = -1, bool fineFlag = false, bool updateFlag = true);
 
 void outInfo(stackReal<float> &stk, imageReal<float> &ref, phi func(const imageReal<float> &imgX, const imageReal<float> &imgC),
              std::vector<std::string> info, const std::string &xmdName);

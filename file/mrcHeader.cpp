@@ -4,15 +4,15 @@
  *
  * Copyright (C) 2021 Pattern Recognition and Bioinformatics Group, Shanghai Jiao Tong University
  *
- * Licensed under the MIT License (see LICENSE for details)
+ * Licensed under the GNU General Public License v3.0 (see LICENSE for details)
  *
  * All comments concerning this program package may be sent to the e-mail address 'yxchen11@sjtu.edu.cn'
  ***************************************************************************/
 
 #include "mrcHeader.h"
 
-
-mrcHeader::mrcHeader() {
+mrcHeader::mrcHeader()
+{
     nx = 0;
     ny = 0;
     nz = 0;
@@ -23,10 +23,12 @@ mrcHeader::mrcHeader() {
     mx = 0;
     my = 0;
     mz = 0;
-    for (int &i : cellA) {
+    for (int &i : cellA)
+    {
         i = 0;
     }
-    for (int &i : cellB) {
+    for (int &i : cellB)
+    {
         i = 0;
     }
     mapC = 1;
@@ -37,14 +39,17 @@ mrcHeader::mrcHeader() {
     dMean = 0;
     ispg = 0;
     nSymBT = 0;
-    for (int &i : extra) {
+    for (int &i : extra)
+    {
         i = 0;
     }
-    for (char &i : extTyp) {
+    for (char &i : extTyp)
+    {
         i = '\000';
     }
     nVersion = 0;
-    for (int &i : origin) {
+    for (int &i : origin)
+    {
         i = 0;
     }
     map[0] = 'M';
@@ -57,13 +62,14 @@ mrcHeader::mrcHeader() {
     machSt[3] = 0x00;
     rms = 0;
     nLabl = 0;
-    for (int &i : label) {
+    for (int &i : label)
+    {
         i = 0;
     }
 }
 
-
-mrcHeader::mrcHeader(const mrcHeader &header) {
+mrcHeader::mrcHeader(const mrcHeader &header)
+{
     nx = header.nx;
     ny = header.ny;
     nz = header.nz;
@@ -103,8 +109,8 @@ mrcHeader::mrcHeader(const mrcHeader &header) {
         label[i] = header.label[i];
 }
 
-
-void mrcHeader::read(std::ifstream &mrc) {
+void mrcHeader::read(std::ifstream &mrc)
+{
     char headerData[totalSize];
     mrc.read(headerData, totalSize);
     int *head = reinterpret_cast<int *>(headerData);
@@ -139,34 +145,34 @@ void mrcHeader::read(std::ifstream &mrc) {
     memcpy(label, head + 56, 200 * sizeof(int));
 }
 
-
-void mrcHeader::write(std::ofstream &mrc) const {
-    mrc.write((char *) &nx, sizeof(int));
-    mrc.write((char *) &ny, sizeof(int));
-    mrc.write((char *) &nz, sizeof(int));
+void mrcHeader::write(std::ofstream &mrc) const
+{
+    mrc.write((char *)&nx, sizeof(int));
+    mrc.write((char *)&ny, sizeof(int));
+    mrc.write((char *)&nz, sizeof(int));
     int modeOut = MODE_REAL_32;
-    mrc.write((char *) &modeOut, sizeof(int));
-    mrc.write((char *) &nxStart, sizeof(int));
-    mrc.write((char *) &nyStart, sizeof(int));
-    mrc.write((char *) &nzStart, sizeof(int));
-    mrc.write((char *) &mx, sizeof(int));
-    mrc.write((char *) &my, sizeof(int));
-    mrc.write((char *) &mz, sizeof(int));
-    mrc.write((char *) &cellA, 3 * sizeof(int));
-    mrc.write((char *) &cellB, 3 * sizeof(int));
-    mrc.write((char *) &mapC, sizeof(int));
-    mrc.write((char *) &mapR, sizeof(int));
-    mrc.write((char *) &mapS, sizeof(int));
-    mrc.write((char *) &dMin, sizeof(float));
-    mrc.write((char *) &dMax, sizeof(float));
-    mrc.write((char *) &dMean, sizeof(float));
-    mrc.write((char *) &ispg, sizeof(int));
-    mrc.write((char *) &nSymBT, sizeof(int));
-    mrc.write((char *) &extra, 25 * sizeof(int));
-    mrc.write((char *) &origin, 3 * sizeof(int));
+    mrc.write((char *)&modeOut, sizeof(int));
+    mrc.write((char *)&nxStart, sizeof(int));
+    mrc.write((char *)&nyStart, sizeof(int));
+    mrc.write((char *)&nzStart, sizeof(int));
+    mrc.write((char *)&mx, sizeof(int));
+    mrc.write((char *)&my, sizeof(int));
+    mrc.write((char *)&mz, sizeof(int));
+    mrc.write((char *)&cellA, 3 * sizeof(int));
+    mrc.write((char *)&cellB, 3 * sizeof(int));
+    mrc.write((char *)&mapC, sizeof(int));
+    mrc.write((char *)&mapR, sizeof(int));
+    mrc.write((char *)&mapS, sizeof(int));
+    mrc.write((char *)&dMin, sizeof(float));
+    mrc.write((char *)&dMax, sizeof(float));
+    mrc.write((char *)&dMean, sizeof(float));
+    mrc.write((char *)&ispg, sizeof(int));
+    mrc.write((char *)&nSymBT, sizeof(int));
+    mrc.write((char *)&extra, 25 * sizeof(int));
+    mrc.write((char *)&origin, 3 * sizeof(int));
     mrc.write(map, 4);
-    mrc.write((char *) &machSt, sizeof(int));
-    mrc.write((char *) &rms, sizeof(int));
-    mrc.write((char *) &nLabl, sizeof(int));
-    mrc.write((char *) &label, 200 * sizeof(int));
+    mrc.write((char *)&machSt, sizeof(int));
+    mrc.write((char *)&rms, sizeof(int));
+    mrc.write((char *)&nLabl, sizeof(int));
+    mrc.write((char *)&label, 200 * sizeof(int));
 }

@@ -1,3 +1,13 @@
+'''
+  Authors:    Yuxuan Chen
+ 
+  Copyright (C) 2021 Pattern Recognition and Bioinformatics Group, Shanghai Jiao Tong University
+ 
+  Licensed under the GNU General Public License v3.0 (see LICENSE for details)
+ 
+  All comments concerning this program package may be sent to the e-mail address 'yxchen11@sjtu.edu.cn'
+'''
+
 import cv2
 import mrcfile
 import numpy as np
@@ -31,7 +41,7 @@ if __name__ == '__main__':
         raise Exception("Error: file format is not supported.")
 
     f = np.abs(np.fft.fftshift(np.fft.fft2(data)))
-    f = f ** 2
+    f = f**2
     f = np.log(f)
 
     fig = plt.figure()

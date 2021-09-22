@@ -4,7 +4,7 @@
  *
  * Copyright (C) 2021 Pattern Recognition and Bioinformatics Group, Shanghai Jiao Tong University
  *
- * Licensed under the MIT License (see LICENSE for details)
+ * Licensed under the GNU General Public License v3.0 (see LICENSE for details)
  *
  * All comments concerning this program package may be sent to the e-mail address 'yxchen11@sjtu.edu.cn'
  ***************************************************************************/
@@ -12,12 +12,10 @@
 #ifndef ALIGNMENT_IMAGE2D_H
 #define ALIGNMENT_IMAGE2D_H
 
-
 #include "array1D.h"
 #include <random>
 #include <chrono>
 #include <vector>
-
 
 #define MIN_D 10e-6
 
@@ -28,36 +26,41 @@
 #define PAD_REPLICATE 1
 #define PAD_WARP 2
 
-
-template<typename T>
-class imageReal {
+template <typename T>
+class imageReal
+{
 public:
     int shape[2]{};
     arrayReal<T> data;
 
 public:
-    imageReal() {
+    imageReal()
+    {
         shape[0] = 0;
         shape[1] = 0;
         data = arrayReal<T>();
     }
 
-    explicit imageReal(const int s[2]) {
+    explicit imageReal(const int s[2])
+    {
         shape[0] = s[0];
         shape[1] = s[1];
         data = arrayReal<T>(shape[0] * shape[1]);
     }
 
-    imageReal(const imageReal<T> &img) {
+    imageReal(const imageReal<T> &img)
+    {
         shape[0] = img.shape[0];
         shape[1] = img.shape[1];
         data = arrayReal<T>(img.data);
     }
 
-    explicit imageReal(const imageReal<T> *img) : imageReal<T>(*img) {
+    explicit imageReal(const imageReal<T> *img) : imageReal<T>(*img)
+    {
     }
 
-    imageReal(const arrayReal<T> &d, const int *s) {
+    imageReal(const arrayReal<T> &d, const int *s)
+    {
         if (d.length != s[0] * s[1])
             throw baseException("Error: Data and shape are not matched!");
         shape[0] = s[0];
@@ -65,7 +68,8 @@ public:
         data = arrayReal<T>(d);
     }
 
-    imageReal(const std::initializer_list<T> &initList, const int s[2]) {
+    imageReal(const std::initializer_list<T> &initList, const int s[2])
+    {
         if (initList.size() != s[0] * s[1])
             throw baseException("Error: Data and shape are not matched!");
         data = arrayReal<T>(initList);
@@ -73,23 +77,27 @@ public:
         shape[1] = s[1];
     }
 
-    imageReal(const T *d, const int s[2]) {
+    imageReal(const T *d, const int s[2])
+    {
         data = arrayReal<T>(d, s[0] * s[1]);
         shape[0] = s[0];
         shape[1] = s[1];
     }
 
-    void arrange() {
+    void arrange()
+    {
         data = data / data.max();
         data = (data - data.min()) / (data.max() - data.min());
         data = data * 255;
     }
 
-    T get(int i, int j) const {
+    T get(int i, int j) const
+    {
         return data[i * shape[1] + j];
     }
 
-    imageReal<T> get(int i, int j, int height, int width) const {
+    imageReal<T> get(int i, int j, int height, int width) const
+    {
         if (i + height > shape[0] || j + width > shape[1])
             throw baseException("Error: Index out of range!");
         int s[2] = {height, width};
@@ -100,11 +108,13 @@ public:
         return r;
     }
 
-    void set(int i, int j, T value) {
+    void set(int i, int j, T value)
+    {
         data[i * shape[1] + j] = value;
     }
 
-    void set(int i, int j, const imageReal<T> &img) {
+    void set(int i, int j, const imageReal<T> &img)
+    {
         if (i + img.shape[0] > shape[0] || j + img.shape[1] > shape[1])
             throw baseException("Error: Index out of range!");
         for (int m = 0; m < img.shape[0]; ++m)
@@ -112,11 +122,13 @@ public:
                 set(m + i, n + j, img.get(m, n));
     }
 
-    T max() const {
+    T max() const
+    {
         return data.max();
     }
 
-    int *argmax() const {
+    int *argmax() const
+    {
         int *r = new int[2];
         int index = data.argmax();
         r[0] = index / shape[1];
@@ -124,11 +136,13 @@ public:
         return r;
     }
 
-    T min() const {
+    T min() const
+    {
         return data.min();
     }
 
-    int *argmin() const {
+    int *argmin() const
+    {
         int *r = new int[2];
         int index = data.argmin();
         r[0] = index / shape[1];
@@ -136,68 +150,81 @@ public:
         return r;
     }
 
-    float mean() const {
+    float mean() const
+    {
         return data.mean();
     }
 
-    T sum() const {
+    T sum() const
+    {
         return data.sum();
     }
 
-    float var() const {
+    float var() const
+    {
         return data.var();
     }
 
-    imageReal<T> copy() const {
+    imageReal<T> copy() const
+    {
         imageReal<T> img = imageReal<T>(this);
         return img;
     }
 
-    imageReal<T> abs() const {
+    imageReal<T> abs() const
+    {
         imageReal<T> img = imageReal<T>(shape);
         img.data = data.abs();
         return img;
     }
 
-    imageReal<T> log() const {
+    imageReal<T> log() const
+    {
         imageReal<T> img = imageReal<T>(shape);
         img.data = data.log();
         return img;
     }
 
-    imageReal<T> sin() const {
+    imageReal<T> sin() const
+    {
         imageReal<T> img = imageReal<T>(shape);
         img.data = data.sin();
         return img;
     }
 
-    imageReal<T> cos() const {
+    imageReal<T> cos() const
+    {
         imageReal<T> img = imageReal<T>(shape);
         img.data = data.cos();
         return img;
     }
 
-    imageReal<T> sqrt() const {
+    imageReal<T> sqrt() const
+    {
         imageReal<T> img = imageReal<T>(shape);
         img.data = data.sqrt();
         return img;
     }
 
-    template<typename T_IN>
-    imageReal<T_IN> asType() const {
+    template <typename T_IN>
+    imageReal<T_IN> asType() const
+    {
         imageReal<T_IN> img = imageReal<T_IN>(shape);
         img.data = data.template asType<T_IN>();
         return img;
     }
 
-    arrayReal<T> operator[](int index) const {
+    arrayReal<T> operator[](int index) const
+    {
         arrayReal<T> ary = arrayReal<T>(shape[1]);
         memcpy(ary.data, data.data + index * shape[1], sizeof(T) * shape[1]);
         return ary;
     }
 
-    imageReal<T> &operator=(const imageReal<T> &img) {
-        if (this == &img) {
+    imageReal<T> &operator=(const imageReal<T> &img)
+    {
+        if (this == &img)
+        {
             return *this;
         }
         shape[0] = img.shape[0];
@@ -206,36 +233,41 @@ public:
         return *this;
     }
 
-    template<typename T1>
-    imageReal<T> operator+(T1 value) const {
+    template <typename T1>
+    imageReal<T> operator+(T1 value) const
+    {
         imageReal<T> img = imageReal<T>(shape);
         img.data = data + value;
         return img;
     }
 
-    template<typename T1>
-    imageReal<T> operator-(T1 value) const {
+    template <typename T1>
+    imageReal<T> operator-(T1 value) const
+    {
         imageReal<T> img = imageReal<T>(shape);
         img.data = data - value;
         return img;
     }
 
-    template<typename T1>
-    imageReal<T> operator*(T1 value) const {
+    template <typename T1>
+    imageReal<T> operator*(T1 value) const
+    {
         imageReal<T> img = imageReal<T>(shape);
         img.data = data * value;
         return img;
     }
 
-    template<typename T1>
-    imageReal<T> operator/(T1 value) const {
+    template <typename T1>
+    imageReal<T> operator/(T1 value) const
+    {
         imageReal<T> img = imageReal<T>(shape);
         img.data = data / value;
         return img;
     }
 
-    template<typename T1>
-    imageReal<T> operator+(const imageReal<T1> img) const {
+    template <typename T1>
+    imageReal<T> operator+(const imageReal<T1> img) const
+    {
         if (shape[0] != img.shape[0] || shape[1] != img.shape[1])
             throw baseException("Error: Two images are not of the same size!");
         imageReal<T> imgOut = imageReal<T>(shape);
@@ -243,8 +275,9 @@ public:
         return imgOut;
     }
 
-    template<typename T1>
-    imageReal<T> operator-(const imageReal<T1> img) const {
+    template <typename T1>
+    imageReal<T> operator-(const imageReal<T1> img) const
+    {
         if (shape[0] != img.shape[0] || shape[1] != img.shape[1])
             throw baseException("Error: Two images are not of the same size!");
         imageReal<T> imgOut = imageReal<T>(shape);
@@ -252,8 +285,9 @@ public:
         return imgOut;
     }
 
-    template<typename T1>
-    imageReal<T> operator*(const imageReal<T1> img) const {
+    template <typename T1>
+    imageReal<T> operator*(const imageReal<T1> img) const
+    {
         if (shape[0] != img.shape[0] || shape[1] != img.shape[1])
             throw baseException("Error: Two images are not of the same size!");
         imageReal<T> imgOut = imageReal<T>(shape);
@@ -261,8 +295,9 @@ public:
         return imgOut;
     }
 
-    template<typename T1>
-    imageReal<T> operator/(const imageReal<T1> img) const {
+    template <typename T1>
+    imageReal<T> operator/(const imageReal<T1> img) const
+    {
         if (shape[0] != img.shape[0] || shape[1] != img.shape[1])
             throw baseException("Error: Two images are not of the same size!");
         imageReal<T> imgOut = imageReal<T>(shape);
@@ -270,9 +305,11 @@ public:
         return imgOut;
     }
 
-    void print() const {
+    void print() const
+    {
         std::cout << typeid(T).name() << '\n';
-        for (int i = 0; i < shape[0]; ++i) {
+        for (int i = 0; i < shape[0]; ++i)
+        {
             for (int j = 0; j < shape[1]; ++j)
                 std::cout << get(i, j) << ' ';
             std::cout << std::endl;
@@ -280,63 +317,72 @@ public:
         std::cout << std::endl;
     }
 
-    imageReal<T> flipX() const {
+    imageReal<T> flipX() const
+    {
         imageReal<T> img = imageReal<T>(shape);
         for (int i = 0; i < shape[0]; ++i)
-            for (int j = 0; j < shape[1]; ++j) {
+            for (int j = 0; j < shape[1]; ++j)
+            {
                 img.set(i, j, get(shape[0] - 1 - i, j));
             }
         return img;
     }
 
-    imageReal<T> flipY() const {
+    imageReal<T> flipY() const
+    {
         imageReal<T> img = imageReal<T>(shape);
         for (int i = 0; i < shape[0]; ++i)
-            for (int j = 0; j < shape[1]; ++j) {
+            for (int j = 0; j < shape[1]; ++j)
+            {
                 img.set(i, j, get(i, shape[1] - 1 - j));
             }
         return img;
     }
 
-    imageReal<T> flipAll() const {
+    imageReal<T> flipAll() const
+    {
         imageReal<T> img = imageReal<T>(shape);
         for (int i = 0; i < shape[0]; ++i)
-            for (int j = 0; j < shape[1]; ++j) {
+            for (int j = 0; j < shape[1]; ++j)
+            {
                 img.set(i, j, get(shape[0] - 1 - i, shape[1] - 1 - j));
             }
         return img;
     }
 
-    arrayReal<T> row(int index) const {
+    arrayReal<T> row(int index) const
+    {
         arrayReal<T> ary = arrayReal<T>(shape[1]);
         memcpy(ary.data, data.data + index * shape[1], sizeof(T) * shape[1]);
         return ary;
     }
 
-    arrayReal<T> column(int index) const {
+    arrayReal<T> column(int index) const
+    {
         arrayReal<T> ary = arrayReal<T>(shape[0]);
         for (int i = 0; i < shape[0]; ++i)
             ary[i] = get(i, index);
         return ary;
     }
 
-    imageReal<T> clip(T minValue, T maxValue) const {
+    imageReal<T> clip(T minValue, T maxValue) const
+    {
         imageReal<T> img = imageReal<T>(this);
         img.data = img.data.clip(minValue, maxValue);
         return img;
     }
 
-    imageReal<T> replace(T value, T valueR) const {
+    imageReal<T> replace(T value, T valueR) const
+    {
         imageReal<T> img = imageReal<T>(this);
         img.data = img.data.replace(value, valueR);
         return img;
     }
-
 };
 
-
-template<typename T>
-T interBiLinear(const imageReal<T> &img, float x, float y) {
+template <typename T>
+T interBiLinear(const imageReal<T> &img, float x, float y)
+{
     int xl = std::floor(x);
     int xr = xl + 1;
     int yl = std::floor(y);
@@ -364,13 +410,17 @@ T interBiLinear(const imageReal<T> &img, float x, float y) {
 
     if (inf.sum() == 0)
         result = 0;
-    else if (inf.sum() == 1) {
+    else if (inf.sum() == 1)
+    {
         for (int i = 0; i < inf.length; ++i)
-            if (inf[i] == 1) {
+            if (inf[i] == 1)
+            {
                 result = neighbour[i];
                 break;
             }
-    } else {
+    }
+    else
+    {
         if (inf.equalList({1, 1, 0, 0}))
             result = neighbour[0] * (y - yl) + neighbour[1] * (yr - y);
         else if (inf.equalList({1, 0, 1, 0}))
@@ -379,19 +429,28 @@ T interBiLinear(const imageReal<T> &img, float x, float y) {
             result = neighbour[1] * (x - xl) + neighbour[3] * (xr - x);
         else if (inf.equalList({0, 0, 1, 1}))
             result = neighbour[2] * (y - yl) + neighbour[3] * (yr - y);
-        else if (inf.equalList({1, 1, 1, 0})) {
+        else if (inf.equalList({1, 1, 1, 0}))
+        {
             T temp = neighbour[0] * (y - yl) + neighbour[1] * (yr - y);
             result = temp * (x - xl) + neighbour[2] * (xr - x);
-        } else if (inf.equalList({1, 1, 0, 1})) {
+        }
+        else if (inf.equalList({1, 1, 0, 1}))
+        {
             T temp = neighbour[0] * (y - yl) + neighbour[1] * (yr - y);
             result = temp * (x - xl) + neighbour[3] * (xr - x);
-        } else if (inf.equalList({1, 0, 1, 1})) {
+        }
+        else if (inf.equalList({1, 0, 1, 1}))
+        {
             T temp = neighbour[2] * (y - yl) + neighbour[3] * (yr - y);
             result = neighbour[0] * (x - xl) + temp * (xr - x);
-        } else if (inf.equalList({0, 1, 1, 1})) {
+        }
+        else if (inf.equalList({0, 1, 1, 1}))
+        {
             T temp = neighbour[2] * (y - yl) + neighbour[3] * (yr - y);
             result = neighbour[1] * (x - xl) + temp * (xr - x);
-        } else {
+        }
+        else
+        {
             T temp1 = neighbour[0] * (y - yl) + neighbour[1] * (yr - y);
             T temp2 = neighbour[2] * (y - yl) + neighbour[3] * (yr - y);
             result = temp1 * (x - xl) + temp2 * (xr - x);
@@ -400,9 +459,9 @@ T interBiLinear(const imageReal<T> &img, float x, float y) {
     return result;
 }
 
-
-template<typename T>
-T interAvg(const imageReal<T> &img, float x, float y) {
+template <typename T>
+T interAvg(const imageReal<T> &img, float x, float y)
+{
     int xl = std::floor(x);
     int xr = std::ceil(x);
     int yl = std::floor(y);
@@ -422,14 +481,14 @@ T interAvg(const imageReal<T> &img, float x, float y) {
     return result;
 }
 
-
-inline float linearValue(float value, float left, float right) {
+inline float linearValue(float value, float left, float right)
+{
     return left + (right - left) * value;
 }
 
-
-template<typename T>
-T interBiLinear2(const imageReal<T> &img, float x, float y) {
+template <typename T>
+T interBiLinear2(const imageReal<T> &img, float x, float y)
+{
     int xl = std::floor(x);
     int xr = xl + 1;
     int yl = std::floor(y);
@@ -459,8 +518,8 @@ T interBiLinear2(const imageReal<T> &img, float x, float y) {
     return r;
 }
 
-
-inline void adjustRange(const int shape[2], float &x, float &y) {
+inline void adjustRange(const int shape[2], float &x, float &y)
+{
     while (x < 0)
         x += shape[0] - 1;
     while (x > shape[0] - 1)
@@ -471,9 +530,9 @@ inline void adjustRange(const int shape[2], float &x, float &y) {
         y -= shape[1] - 1;
 }
 
-
-template<typename T>
-T interBiLinear2Loop(const imageReal<T> &img, float x, float y) {
+template <typename T>
+T interBiLinear2Loop(const imageReal<T> &img, float x, float y)
+{
     adjustRange(img.shape, x, y);
     int xl = std::floor(x);
     xl = xl == img.shape[0] - 1 ? xl - 1 : xl;
@@ -494,16 +553,17 @@ T interBiLinear2Loop(const imageReal<T> &img, float x, float y) {
     return r;
 }
 
-
-template<typename T>
-imageReal<T> warp(const imageReal<T> &img, float matrix[3][3]) {
+template <typename T>
+imageReal<T> warp(const imageReal<T> &img, float matrix[3][3])
+{
     imageReal<T> imgNew = imageReal<T>(img.shape);
     float abs = matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
-    float matrix_inv[3][3] = {{matrix[1][1] / abs,  -matrix[0][1] / abs, (matrix[0][1] * matrix[1][2] - matrix[1][1] * matrix[0][2]) / abs},
-                              {-matrix[1][0] / abs, matrix[0][0] / abs,  (matrix[1][0] * matrix[0][2] - matrix[0][0] * matrix[1][2]) / abs},
-                              {0,                   0,                   1}};
+    float matrix_inv[3][3] = {{matrix[1][1] / abs, -matrix[0][1] / abs, (matrix[0][1] * matrix[1][2] - matrix[1][1] * matrix[0][2]) / abs},
+                              {-matrix[1][0] / abs, matrix[0][0] / abs, (matrix[1][0] * matrix[0][2] - matrix[0][0] * matrix[1][2]) / abs},
+                              {0, 0, 1}};
     for (int i = 0; i < img.shape[0]; ++i)
-        for (int j = 0; j < img.shape[1]; ++j) {
+        for (int j = 0; j < img.shape[1]; ++j)
+        {
             float x_in = matrix_inv[0][0] * i + matrix_inv[0][1] * j + matrix_inv[0][2];
             float y_in = matrix_inv[1][0] * i + matrix_inv[1][1] * j + matrix_inv[1][2];
             imgNew.set(i, j, interBiLinear2Loop(img, x_in, y_in));
@@ -511,9 +571,9 @@ imageReal<T> warp(const imageReal<T> &img, float matrix[3][3]) {
     return imgNew;
 }
 
-
-template<typename T>
-imageReal<T> shift(const imageReal<T> &img, float x, float y) {
+template <typename T>
+imageReal<T> shift(const imageReal<T> &img, float x, float y)
+{
     float matrix[3][3] = {{1, 0, x},
                           {0, 1, y},
                           {0, 0, 1}};
@@ -521,45 +581,49 @@ imageReal<T> shift(const imageReal<T> &img, float x, float y) {
     return imgNew;
 }
 
-
-template<typename T>
-imageReal<T> rotate(const imageReal<T> &img, float ang) {
+template <typename T>
+imageReal<T> rotate(const imageReal<T> &img, float ang)
+{
     float ang_r = -ang / 360 * 2 * M_PI;
     float rows = img.shape[0] / 2;
     float cols = img.shape[1] / 2;
-    float matrix[3][3] = {{std::cos(ang_r),  std::sin(ang_r), rows - rows * std::cos(ang_r) - cols * std::sin(ang_r)},
+    float matrix[3][3] = {{std::cos(ang_r), std::sin(ang_r), rows - rows * std::cos(ang_r) - cols * std::sin(ang_r)},
                           {-std::sin(ang_r), std::cos(ang_r), cols - cols * std::cos(ang_r) + rows * std::sin(ang_r)},
-                          {0,                0,               1}};
+                          {0, 0, 1}};
     imageReal<T> imgNew = warp(img, matrix);
     return imgNew;
 }
 
-
-template<typename T>
-imageReal<T> extend2Image(const arrayReal<T> &ary, int l, int mode) {
+template <typename T>
+imageReal<T> extend2Image(const arrayReal<T> &ary, int l, int mode)
+{
     if (l <= 0)
         throw baseException("Error: Length of extension should positive!");
-    if (mode == ORIENTATION_ROW) {
+    if (mode == ORIENTATION_ROW)
+    {
         int shape[2] = {l, ary.length};
         imageReal<T> img = imageReal<T>(shape);
         for (int i = 0; i < l; ++i)
             for (int j = 0; j < ary.length; ++j)
                 img.set(i, j, ary[j]);
         return img;
-    } else if (mode == ORIENTATION_COLUMN) {
+    }
+    else if (mode == ORIENTATION_COLUMN)
+    {
         int shape[2] = {ary.length, l};
         imageReal<T> img = imageReal<T>(shape);
         for (int i = 0; i < ary.length; ++i)
             for (int j = 0; j < l; ++j)
                 img.set(i, j, ary[i]);
         return img;
-    } else
+    }
+    else
         throw baseException("Error: Orientation parameter should be 0 or 1!");
 }
 
-
-template<typename T>
-imageReal<T> hanning(const imageReal<T> &img) {
+template <typename T>
+imageReal<T> hanning(const imageReal<T> &img)
+{
     arrayReal<T> row = arrayReal<T>(img.shape[1]);
     arrayReal<T> col = arrayReal<T>(img.shape[0]);
     for (int i = 0; i < img.shape[1]; ++i)
@@ -572,9 +636,9 @@ imageReal<T> hanning(const imageReal<T> &img) {
     return img * mask;
 }
 
-
-template<typename T>
-imageReal<T> hamming(const imageReal<T> &img) {
+template <typename T>
+imageReal<T> hamming(const imageReal<T> &img)
+{
     arrayReal<T> row = arrayReal<T>(img.shape[1]);
     arrayReal<T> col = arrayReal<T>(img.shape[0]);
     for (int i = 0; i < img.shape[1]; ++i)
@@ -587,12 +651,13 @@ imageReal<T> hamming(const imageReal<T> &img) {
     return img * mask;
 }
 
-
-template<typename T>
-imageReal<T> butterworthLow(const imageReal<T> &img, const float center[2], float d0, int n) {
+template <typename T>
+imageReal<T> butterworthLow(const imageReal<T> &img, const float center[2], float d0, int n)
+{
     imageReal<T> r = imageReal<T>(img.shape);
     for (int i = 0; i < img.shape[0]; ++i)
-        for (int j = 0; j < img.shape[1]; ++j) {
+        for (int j = 0; j < img.shape[1]; ++j)
+        {
             double dn = std::sqrt((i - center[0]) * (i - center[0]) + (j - center[1]) * (j - center[1]));
             double rate = 1 + std::pow(dn / d0, n);
             r.set(i, j, img.get(i, j) / rate);
@@ -600,16 +665,18 @@ imageReal<T> butterworthLow(const imageReal<T> &img, const float center[2], floa
     return r;
 }
 
-
-template<typename T>
-imageReal<T> butterworthHigh(const imageReal<T> &img, const float center[2], float d0, int n) {
+template <typename T>
+imageReal<T> butterworthHigh(const imageReal<T> &img, const float center[2], float d0, int n)
+{
     imageReal<T> r = imageReal<T>(img.shape);
     for (int i = 0; i < img.shape[0]; ++i)
-        for (int j = 0; j < img.shape[1]; ++j) {
+        for (int j = 0; j < img.shape[1]; ++j)
+        {
             double dn = std::sqrt((i - center[0]) * (i - center[0]) + (j - center[1]) * (j - center[1]));
             if (dn == 0)
                 r.set(i, j, 0);
-            else {
+            else
+            {
                 double rate = 1 + std::pow(d0 / dn, n);
                 r.set(i, j, img.get(i, j) / rate);
             }
@@ -617,35 +684,37 @@ imageReal<T> butterworthHigh(const imageReal<T> &img, const float center[2], flo
     return r;
 }
 
-
-template<typename T>
-T moment(const imageReal<T> &img, int p, int q, int width = -1) {
+template <typename T>
+T moment(const imageReal<T> &img, int p, int q, int width = -1)
+{
     T s = 0;
     int centerX = img.shape[0] / 2;
     int centerY = img.shape[1] / 2;
     for (int i = centerX - width; i < centerX + width; ++i)
-        for (int j = centerY - width; j < centerY + width; ++j) {
+        for (int j = centerY - width; j < centerY + width; ++j)
+        {
             s += img.get(i, j) * std::pow(i, p) * std::pow(j, q);
         }
     return s;
 }
 
-
-template<typename T>
-T centerMoment(const imageReal<T> &img, int p, int q, T xM, T yM, int width = -1) {
+template <typename T>
+T centerMoment(const imageReal<T> &img, int p, int q, T xM, T yM, int width = -1)
+{
     T s = 0;
     int centerX = img.shape[0] / 2;
     int centerY = img.shape[1] / 2;
     for (int i = centerX - width; i < centerX + width; ++i)
-        for (int j = centerY - width; j < centerY + width; ++j) {
+        for (int j = centerY - width; j < centerY + width; ++j)
+        {
             s += img.get(i, j) * std::pow(i - xM, p) * std::pow(j - yM, q);
         }
     return s;
 }
 
-
-template<typename T>
-float momentDirection(const imageReal<T> &img, int width = -1) {
+template <typename T>
+float momentDirection(const imageReal<T> &img, int width = -1)
+{
     if (width == -1)
         width = img.shape[0] / 2;
     T m00 = moment(img, 0, 0, width);
@@ -660,10 +729,10 @@ float momentDirection(const imageReal<T> &img, int width = -1) {
     return ang;
 }
 
-
 /// eight nearest neighbour in counterclockwise order
-template<typename T>
-arrayReal<T> findNeighbour(const imageReal<T> &img, int x, int y) {
+template <typename T>
+arrayReal<T> findNeighbour(const imageReal<T> &img, int x, int y)
+{
     int xl = x - 1;
     int xr = x + 1;
     int yl = y - 1;
@@ -688,30 +757,39 @@ arrayReal<T> findNeighbour(const imageReal<T> &img, int x, int y) {
     return neighbour;
 }
 
-
-template<typename T>
-imageReal<int> connectDomainTwoPass(const imageReal<T> &img) {
+template <typename T>
+imageReal<int> connectDomainTwoPass(const imageReal<T> &img)
+{
     int label = 1;
     std::vector<arrayReal<int>> equalLabels;
     imageReal<int> r = imageReal<int>(img.shape);
     for (int i = 0; i < img.shape[0]; ++i)
         for (int j = 0; j < img.shape[1]; ++j)
-            if (img.get(i, j) == 1) {
+            if (img.get(i, j) == 1)
+            {
                 arrayReal<int> neighbour = findNeighbour(r, i, j);
                 int m1 = neighbour.max();
-                if (m1 == 0) {
+                if (m1 == 0)
+                {
                     r.set(i, j, label);
                     ++label;
-                } else {
+                }
+                else
+                {
                     neighbour = neighbour.replace(0, neighbour.max());
                     r.set(i, j, neighbour.min());
-                    if (neighbour.min() != neighbour.max()) {
-                        if (equalLabels.empty()) {
+                    if (neighbour.min() != neighbour.max())
+                    {
+                        if (equalLabels.empty())
+                        {
                             equalLabels.push_back(neighbour.unique());
-                        } else {
+                        }
+                        else
+                        {
                             bool flag = true;
                             for (auto &equalLabel : equalLabels)
-                                if (equalLabel.intersectionA(neighbour).length != 0) {
+                                if (equalLabel.intersectionA(neighbour).length != 0)
+                                {
                                     equalLabel = equalLabel.unionA(neighbour);
                                     flag = false;
                                     break;
@@ -727,7 +805,8 @@ imageReal<int> connectDomainTwoPass(const imageReal<T> &img) {
         for (int j = 0; j < r.shape[1]; ++j)
             if (r.get(i, j) != 0)
                 for (auto &equalLabel : equalLabels)
-                    if (equalLabel.exist(r.get(i, j)) != 0) {
+                    if (equalLabel.exist(r.get(i, j)) != 0)
+                    {
                         r.set(i, j, equalLabel.min());
                         break;
                     }
@@ -735,21 +814,26 @@ imageReal<int> connectDomainTwoPass(const imageReal<T> &img) {
     return r;
 }
 
-
-template<typename T>
-imageReal<int> largestDomain(const imageReal<T> &img) {
+template <typename T>
+imageReal<int> largestDomain(const imageReal<T> &img)
+{
     imageReal<int> domain = connectDomainTwoPass(img);
     arrayReal<int> flatten = domain.data.sort();
     arrayReal<int> valueGroup;
     arrayReal<int> countGroup;
     int c = -1;
-    for (int i = 0; i < flatten.length; ++i) {
-        if (flatten[i] != 0) {
-            if (valueGroup.exist(flatten[i]) == 0) {
+    for (int i = 0; i < flatten.length; ++i)
+    {
+        if (flatten[i] != 0)
+        {
+            if (valueGroup.exist(flatten[i]) == 0)
+            {
                 valueGroup.append(flatten[i]);
                 countGroup.append(1);
                 ++c;
-            } else {
+            }
+            else
+            {
                 ++countGroup[c];
             }
         }
@@ -757,7 +841,8 @@ imageReal<int> largestDomain(const imageReal<T> &img) {
     int index = countGroup.argmax();
     int valueMost = valueGroup[index];
     for (int i = 0; i < domain.shape[0]; ++i)
-        for (int j = 0; j < domain.shape[1]; ++j) {
+        for (int j = 0; j < domain.shape[1]; ++j)
+        {
             if (domain.get(i, j) == valueMost)
                 domain.set(i, j, 1);
             else
@@ -766,9 +851,9 @@ imageReal<int> largestDomain(const imageReal<T> &img) {
     return domain;
 }
 
-
-template<typename T>
-T correntropy(const imageReal<T> &img1, const imageReal<T> &img2) {
+template <typename T>
+T correntropy(const imageReal<T> &img1, const imageReal<T> &img2)
+{
     if (img1.shape[0] != img2.shape[0] || img1.shape[1] != img2.shape[1])
         throw baseException("Error: Two images are not of the same shape!");
     T value = 0;
@@ -778,15 +863,16 @@ T correntropy(const imageReal<T> &img1, const imageReal<T> &img2) {
     return value / img1.shape[0] / img1.shape[1];
 }
 
-
-template<typename T>
-imageReal<T> polarBack(const imageReal<T> &img, bool logFlag = false) {
+template <typename T>
+imageReal<T> polarBack(const imageReal<T> &img, bool logFlag = false)
+{
     float centerX = img.shape[0] / 2;
     float centerY = img.shape[1] / 2;
     imageReal<T> imgPolar = imageReal<T>(img.shape);
     float maxRadius = std::sqrt(std::pow(centerX, 2) + std::pow(centerY, 2));
     for (int i = 0; i < img.shape[0]; ++i)
-        for (int j = 0; j < img.shape[1]; ++j) {
+        for (int j = 0; j < img.shape[1]; ++j)
+        {
             float ang = static_cast<float>(i) / img.shape[0] * 360;
             float radius;
             if (logFlag)
@@ -800,30 +886,32 @@ imageReal<T> polarBack(const imageReal<T> &img, bool logFlag = false) {
     return imgPolar;
 }
 
-
-template<typename T>
-imageReal<T> valueInter(const imageReal<T> &img, T value) {
+template <typename T>
+imageReal<T> valueInter(const imageReal<T> &img, T value)
+{
     imageReal<T> imgNew = img.copy();
     for (int i = 0; i < img.shape[0]; ++i)
         for (int j = 0; j < img.shape[1]; ++j)
-            if (std::abs(img.get(i, j) - value) < MIN_D) {
-//                arrayReal<T> neighbour = findNeighbour(img, i, j);
-//                T m = static_cast<T>(neighbour.mean());
+            if (std::abs(img.get(i, j) - value) < MIN_D)
+            {
+                //                arrayReal<T> neighbour = findNeighbour(img, i, j);
+                //                T m = static_cast<T>(neighbour.mean());
                 T m = interBiLinear2Loop(img, i, j);
                 imgNew.set(i, j, m);
             }
     return imgNew;
 }
 
-
-template<typename T>
-imageReal<T> polarFront(const imageReal<T> &img, bool logFlag = false) {
+template <typename T>
+imageReal<T> polarFront(const imageReal<T> &img, bool logFlag = false)
+{
     float centerX = img.shape[0] / 2;
     float centerY = img.shape[1] / 2;
     imageReal<T> imgPolar = imageReal<T>(img.shape);
     float maxRadius = std::sqrt(std::pow(centerX, 2) + std::pow(centerY, 2));
     for (int i = 0; i < img.shape[0]; ++i)
-        for (int j = 0; j < img.shape[1]; ++j) {
+        for (int j = 0; j < img.shape[1]; ++j)
+        {
             float radius = std::sqrt(std::pow(i - centerX, 2) + std::pow(j - centerY, 2));
             float yD = centerX - i;
             float xD = j - centerY;
@@ -841,95 +929,98 @@ imageReal<T> polarFront(const imageReal<T> &img, bool logFlag = false) {
     return imgPolar;
 }
 
-
-template<typename T>
-imageReal<T> padding(const imageReal<T> &img, int top, int bottom, int left, int right, int mode, int value = 0) {
+template <typename T>
+imageReal<T> padding(const imageReal<T> &img, int top, int bottom, int left, int right, int mode, int value = 0)
+{
     int s[2] = {img.shape[0] + top + bottom, img.shape[1] + left + right};
     imageReal<T> r = imageReal<T>(s);
-    switch (mode) {
-        case PAD_CONSTANT:
-            for (int j = 0; j < r.shape[1]; ++j) {
-                for (int i = 0; i < top; ++i)
-                    r.set(i, j, value);
-                for (int i = r.shape[0] - bottom; i < r.shape[0]; ++i)
-                    r.set(i, j, value);
-            }
-            for (int i = top; i < r.shape[0] - bottom; ++i) {
-                for (int j = 0; j < left; ++j)
-                    r.set(i, j, value);
-                for (int j = r.shape[1] - right; j < r.shape[1]; ++j)
-                    r.set(i, j, value);
-            }
-            for (int i = top; i < r.shape[0] - bottom; ++i)
-                for (int j = left; j < r.shape[1] - right; ++j)
-                    r.set(i, j, img.get(i - top, j - left));
-            break;
-        case PAD_REPLICATE:
+    switch (mode)
+    {
+    case PAD_CONSTANT:
+        for (int j = 0; j < r.shape[1]; ++j)
+        {
             for (int i = 0; i < top; ++i)
-                for (int j = 0; j < left; ++j)
-                    r.set(i, j, img.get(0, 0));
-            for (int i = top; i < r.shape[0] - bottom; ++i)
-                for (int j = 0; j < left; ++j)
-                    r.set(i, j, img.get(i - top, 0));
-            for (int i = top; i < r.shape[0] - bottom; ++i)
-                for (int j = r.shape[1] - right; j < r.shape[1]; ++j)
-                    r.set(i, j, img.get(i - top, img.shape[1] - 1));
+                r.set(i, j, value);
             for (int i = r.shape[0] - bottom; i < r.shape[0]; ++i)
-                for (int j = 0; j < left; ++j)
-                    r.set(i, j, img.get(img.shape[0] - 1, 0));
+                r.set(i, j, value);
+        }
+        for (int i = top; i < r.shape[0] - bottom; ++i)
+        {
+            for (int j = 0; j < left; ++j)
+                r.set(i, j, value);
+            for (int j = r.shape[1] - right; j < r.shape[1]; ++j)
+                r.set(i, j, value);
+        }
+        for (int i = top; i < r.shape[0] - bottom; ++i)
             for (int j = left; j < r.shape[1] - right; ++j)
-                for (int i = 0; i < top; ++i)
-                    r.set(i, j, img.get(0, j - left));
+                r.set(i, j, img.get(i - top, j - left));
+        break;
+    case PAD_REPLICATE:
+        for (int i = 0; i < top; ++i)
+            for (int j = 0; j < left; ++j)
+                r.set(i, j, img.get(0, 0));
+        for (int i = top; i < r.shape[0] - bottom; ++i)
+            for (int j = 0; j < left; ++j)
+                r.set(i, j, img.get(i - top, 0));
+        for (int i = top; i < r.shape[0] - bottom; ++i)
+            for (int j = r.shape[1] - right; j < r.shape[1]; ++j)
+                r.set(i, j, img.get(i - top, img.shape[1] - 1));
+        for (int i = r.shape[0] - bottom; i < r.shape[0]; ++i)
+            for (int j = 0; j < left; ++j)
+                r.set(i, j, img.get(img.shape[0] - 1, 0));
+        for (int j = left; j < r.shape[1] - right; ++j)
+            for (int i = 0; i < top; ++i)
+                r.set(i, j, img.get(0, j - left));
+        for (int j = left; j < r.shape[1] - right; ++j)
+            for (int i = r.shape[0] - bottom; i < r.shape[0]; ++i)
+                r.set(i, j, img.get(img.shape[0] - 1, j - left));
+        for (int i = 0; i < top; ++i)
+            for (int j = r.shape[1] - right; j < r.shape[1]; ++j)
+                r.set(i, j, img.get(0, img.shape[1] - 1));
+        for (int i = r.shape[0] - bottom; i < r.shape[0]; ++i)
+            for (int j = r.shape[1] - right; j < r.shape[1]; ++j)
+                r.set(i, j, img.get(img.shape[0] - 1, img.shape[1] - 1));
+        for (int i = top; i < r.shape[0] - bottom; ++i)
             for (int j = left; j < r.shape[1] - right; ++j)
-                for (int i = r.shape[0] - bottom; i < r.shape[0]; ++i)
-                    r.set(i, j, img.get(img.shape[0] - 1, j - left));
-            for (int i = 0; i < top; ++i)
-                for (int j = r.shape[1] - right; j < r.shape[1]; ++j)
-                    r.set(i, j, img.get(0, img.shape[1] - 1));
-            for (int i = r.shape[0] - bottom; i < r.shape[0]; ++i)
-                for (int j = r.shape[1] - right; j < r.shape[1]; ++j)
-                    r.set(i, j, img.get(img.shape[0] - 1, img.shape[1] - 1));
-            for (int i = top; i < r.shape[0] - bottom; ++i)
-                for (int j = left; j < r.shape[1] - right; ++j)
-                    r.set(i, j, img.get(i - top, j - left));
-            break;
-        case PAD_WARP:
-            for (int i = 0; i < top; ++i)
-                for (int j = 0; j < left; ++j)
-                    r.set(i, j, img.get(img.shape[0] - top + i, img.shape[1] - left + j));
-            for (int i = 0; i < top; ++i)
-                for (int j = left; j < r.shape[1] - right; ++j)
-                    r.set(i, j, img.get(img.shape[0] - top + i, j - left));
-            for (int i = 0; i < top; ++i)
-                for (int j = r.shape[1] - right; j < r.shape[1]; ++j)
-                    r.set(i, j, img.get(img.shape[0] - top + i, j - left - img.shape[1]));
-            for (int i = top; i < r.shape[0] - bottom; ++i)
-                for (int j = 0; j < left; ++j)
-                    r.set(i, j, img.get(i - top, img.shape[1] - left + j));
-            for (int i = top; i < r.shape[0] - bottom; ++i)
-                for (int j = r.shape[1] - right; j < r.shape[1]; ++j)
-                    r.set(i, j, img.get(i - top, j - left - img.shape[1]));
-            for (int i = r.shape[0] - bottom; i < r.shape[0]; ++i)
-                for (int j = 0; j < left; ++j)
-                    r.set(i, j, img.get(i - top - img.shape[0], img.shape[1] - left + j));
-            for (int i = r.shape[0] - bottom; i < r.shape[0]; ++i)
-                for (int j = left; j < r.shape[1] - right; ++j)
-                    r.set(i, j, img.get(i - top - img.shape[0], j - left));
-            for (int i = r.shape[0] - bottom; i < r.shape[0]; ++i)
-                for (int j = r.shape[1] - right; j < r.shape[1]; ++j)
-                    r.set(i, j, img.get(i - top - img.shape[0], j - left - img.shape[1]));
-            for (int i = top; i < r.shape[0] - bottom; ++i)
-                for (int j = left; j < r.shape[1] - right; ++j)
-                    r.set(i, j, img.get(i - top, j - left));
-            break;
-        default:
-            throw baseException("Error: Input padding mode is not supported!");
+                r.set(i, j, img.get(i - top, j - left));
+        break;
+    case PAD_WARP:
+        for (int i = 0; i < top; ++i)
+            for (int j = 0; j < left; ++j)
+                r.set(i, j, img.get(img.shape[0] - top + i, img.shape[1] - left + j));
+        for (int i = 0; i < top; ++i)
+            for (int j = left; j < r.shape[1] - right; ++j)
+                r.set(i, j, img.get(img.shape[0] - top + i, j - left));
+        for (int i = 0; i < top; ++i)
+            for (int j = r.shape[1] - right; j < r.shape[1]; ++j)
+                r.set(i, j, img.get(img.shape[0] - top + i, j - left - img.shape[1]));
+        for (int i = top; i < r.shape[0] - bottom; ++i)
+            for (int j = 0; j < left; ++j)
+                r.set(i, j, img.get(i - top, img.shape[1] - left + j));
+        for (int i = top; i < r.shape[0] - bottom; ++i)
+            for (int j = r.shape[1] - right; j < r.shape[1]; ++j)
+                r.set(i, j, img.get(i - top, j - left - img.shape[1]));
+        for (int i = r.shape[0] - bottom; i < r.shape[0]; ++i)
+            for (int j = 0; j < left; ++j)
+                r.set(i, j, img.get(i - top - img.shape[0], img.shape[1] - left + j));
+        for (int i = r.shape[0] - bottom; i < r.shape[0]; ++i)
+            for (int j = left; j < r.shape[1] - right; ++j)
+                r.set(i, j, img.get(i - top - img.shape[0], j - left));
+        for (int i = r.shape[0] - bottom; i < r.shape[0]; ++i)
+            for (int j = r.shape[1] - right; j < r.shape[1]; ++j)
+                r.set(i, j, img.get(i - top - img.shape[0], j - left - img.shape[1]));
+        for (int i = top; i < r.shape[0] - bottom; ++i)
+            for (int j = left; j < r.shape[1] - right; ++j)
+                r.set(i, j, img.get(i - top, j - left));
+        break;
+    default:
+        throw baseException("Error: Input padding mode is not supported!");
     }
     return r;
 }
 
-
-class imageComplex {
+class imageComplex
+{
 public:
     int shape[2]{};
     arrayComplex data;
@@ -999,8 +1090,9 @@ public:
 
     imageComplex operator/(const imageComplex &img) const;
 
-    template<typename T>
-    imageComplex operator+(const imageReal<T> &img) const {
+    template <typename T>
+    imageComplex operator+(const imageReal<T> &img) const
+    {
         if (shape[0] != img.shape[0] || shape[1] != img.shape[1])
             throw baseException("Error: Two images are not of the same size!");
         imageComplex imgOut = imageComplex(shape);
@@ -1008,8 +1100,9 @@ public:
         return imgOut;
     }
 
-    template<typename T>
-    imageComplex operator-(const imageReal<T> &img) const {
+    template <typename T>
+    imageComplex operator-(const imageReal<T> &img) const
+    {
         if (shape[0] != img.shape[0] || shape[1] != img.shape[1])
             throw baseException("Error: Two images are not of the same size!");
         imageComplex imgOut = imageComplex(shape);
@@ -1017,8 +1110,9 @@ public:
         return imgOut;
     }
 
-    template<typename T>
-    imageComplex operator*(const imageReal<T> &img) const {
+    template <typename T>
+    imageComplex operator*(const imageReal<T> &img) const
+    {
         if (shape[0] != img.shape[0] || shape[1] != img.shape[1])
             throw baseException("Error: Two images are not of the same size!");
         imageComplex imgOut = imageComplex(shape);
@@ -1026,8 +1120,9 @@ public:
         return imgOut;
     }
 
-    template<typename T>
-    imageComplex operator/(const imageReal<T> &img) const {
+    template <typename T>
+    imageComplex operator/(const imageReal<T> &img) const
+    {
         if (shape[0] != img.shape[0] || shape[1] != img.shape[1])
             throw baseException("Error: Two images are not of the same size!");
         imageComplex imgOut = imageComplex(shape);
@@ -1044,9 +1139,7 @@ public:
     arrayComplex row(int index) const;
 
     arrayComplex column(int index) const;
-
 };
-
 
 double *interBiLinear(const imageComplex &img, float x, float y);
 
@@ -1078,6 +1171,5 @@ imageComplex polarFront(const imageComplex &img, bool logFlag = false);
 imageReal<int> circularMask(const int shape[2], double radius);
 
 imageComplex bind(const imageReal<double> &abs, const imageReal<double> &angle);
-
 
 #endif //ALIGNMENT_IMAGE2D_H

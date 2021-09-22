@@ -4,26 +4,27 @@
  *
  * Copyright (C) 2021 Pattern Recognition and Bioinformatics Group, Shanghai Jiao Tong University
  *
- * Licensed under the MIT License (see LICENSE for details)
+ * Licensed under the GNU General Public License v3.0 (see LICENSE for details)
  *
  * All comments concerning this program package may be sent to the e-mail address 'yxchen11@sjtu.edu.cn'
  ***************************************************************************/
 
 #include "fileStack.h"
 
-
-std::vector<std::string> split(const std::string &line, char symbol) {
+std::vector<std::string> split(const std::string &line, char symbol)
+{
     std::istringstream sin(line);
     std::vector<std::string> fields;
     std::string field;
-    while (getline(sin, field, symbol)) {
+    while (getline(sin, field, symbol))
+    {
         fields.push_back(field);
     }
     return fields;
 }
 
-
-fileStack::fileStack(const std::string &aux, const std::string &auxB) {
+fileStack::fileStack(const std::string &aux, const std::string &auxB)
+{
     if (access(auxB.c_str(), 0) == 0)
         system(("rm -r " + auxB).c_str());
     int mdB = mkdir(auxB.c_str(), S_IRWXU);
@@ -33,17 +34,17 @@ fileStack::fileStack(const std::string &aux, const std::string &auxB) {
     auxFolderBack = auxB;
 }
 
-
 fileStack::fileStack(const std::string &path, const std::string &extension, const std::string &aux,
-                     const std::string &auxB) {
-//    if (access(aux.c_str(), 0) == 0)
-//        system(("rm -r " + aux).c_str());
-//    if (access(auxB.c_str(), 0) == 0)
-//        system(("rm -r " + auxB).c_str());
-//    int md = mkdir(aux.c_str(), S_IRWXU);
-//    int mdB = mkdir(auxB.c_str(), S_IRWXU);
-//    if (md == -1 || mdB == -1)
-//        throw baseException("Error: Unable to create aux folder for file stacks!");
+                     const std::string &auxB)
+{
+    //    if (access(aux.c_str(), 0) == 0)
+    //        system(("rm -r " + aux).c_str());
+    //    if (access(auxB.c_str(), 0) == 0)
+    //        system(("rm -r " + auxB).c_str());
+    //    int md = mkdir(aux.c_str(), S_IRWXU);
+    //    int mdB = mkdir(auxB.c_str(), S_IRWXU);
+    //    if (md == -1 || mdB == -1)
+    //        throw baseException("Error: Unable to create aux folder for file stacks!");
     auxFolder = aux;
     auxFolderBack = auxB;
 
@@ -54,12 +55,13 @@ fileStack::fileStack(const std::string &path, const std::string &extension, cons
     if (glob(pattern, GLOB_ERR, nullptr, &g) != 0)
         throw baseException("Error: Failed to load from folder!");
 
-    for (int i = 0; i < g.gl_pathc; i++) {
-//        mrcFile file = mrcFile();
-//        file.read(g.gl_pathv[i]);
+    for (int i = 0; i < g.gl_pathc; i++)
+    {
+        //        mrcFile file = mrcFile();
+        //        file.read(g.gl_pathv[i]);
         std::vector<std::string> sg = split(g.gl_pathv[i], '/');
         std::string fileName = sg[sg.size() - 1];
-//        file.write(auxFolder + fileName);
+        //        file.write(auxFolder + fileName);
         names.emplace_back(auxFolder + fileName);
     }
     globfree(&g);
@@ -71,22 +73,22 @@ fileStack::fileStack(const std::string &path, const std::string &extension, cons
     shape[2] = mrc.data.shape[2];
 }
 
-
-float fileStack::get(int i, int j, int k) const {
+float fileStack::get(int i, int j, int k) const
+{
     imageReal<float> img = pieceGet(i);
     return img.get(j, k);
 }
 
-
-imageReal<float> fileStack::pieceGet(int index) const {
+imageReal<float> fileStack::pieceGet(int index) const
+{
     mrcFile mrc = mrcFile();
     mrc.read(names[index]);
     imageReal<float> img = mrc.data.pieceGet(0);
     return img;
 }
 
-
-void fileStack::pieceSet(int index, const imageReal<float> &img) {
+void fileStack::pieceSet(int index, const imageReal<float> &img)
+{
     mrcFile mrc_new = mrcFile();
     stackReal<float> stk = image2Stack(img);
     mrc_new.setData(stk);
@@ -98,9 +100,10 @@ void fileStack::pieceSet(int index, const imageReal<float> &img) {
     names[index] = path;
 }
 
-
-void fileStack::append(const std::string &path) {
-    if (shape[0] == 0) {
+void fileStack::append(const std::string &path)
+{
+    if (shape[0] == 0)
+    {
         mrcFile mrc = mrcFile();
         mrc.read(path);
         shape[1] = mrc.data.shape[1];
@@ -110,9 +113,10 @@ void fileStack::append(const std::string &path) {
     names.push_back(path);
 }
 
-
-void fileStack::append(const imageReal<float> &img) {
-    if (shape[0] == 0) {
+void fileStack::append(const imageReal<float> &img)
+{
+    if (shape[0] == 0)
+    {
         shape[1] = img.shape[0];
         shape[2] = img.shape[1];
     }
@@ -128,7 +132,8 @@ void fileStack::append(const imageReal<float> &img) {
     randomLabel = randomLabel < 0 ? -randomLabel : randomLabel;
     std::string ss = std::to_string(randomLabel);
     int width = 10;
-    while (ss.size() < width) {
+    while (ss.size() < width)
+    {
         ss = "0" + ss;
     }
     std::string name = auxFolderBack + ss + ".mrcs";

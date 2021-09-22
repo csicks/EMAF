@@ -4,7 +4,7 @@
  *
  * Copyright (C) 2021 Pattern Recognition and Bioinformatics Group, Shanghai Jiao Tong University
  *
- * Licensed under the MIT License (see LICENSE for details)
+ * Licensed under the GNU General Public License v3.0 (see LICENSE for details)
  *
  * All comments concerning this program package may be sent to the e-mail address 'yxchen11@sjtu.edu.cn'
  ***************************************************************************/
@@ -12,10 +12,8 @@
 #ifndef ALIGNMENT_FFT_H
 #define ALIGNMENT_FFT_H
 
-
 /** reference website:
            * http://www.fftw.org/fftw3_doc/ */
-
 
 #include <fftw3.h>
 #include <cstring>
@@ -23,9 +21,9 @@
 #include "array1D.h"
 #include "image2D.h"
 
-
-template<typename T>
-arrayComplex fft(const arrayReal<T> &ary) {
+template <typename T>
+arrayComplex fft(const arrayReal<T> &ary)
+{
     return fft(ary.template asType<double>());
 }
 
@@ -41,8 +39,9 @@ arrayComplex fftShift(const arrayComplex &ary);
 
 arrayComplex ifftShift(const arrayComplex &ary);
 
-template<typename T>
-arrayComplex fftHalf(const arrayReal<T> &ary) {
+template <typename T>
+arrayComplex fftHalf(const arrayReal<T> &ary)
+{
     return fftHalf(ary.template asType<double>());
 }
 
@@ -50,8 +49,9 @@ arrayComplex fftHalf(const arrayReal<double> &ary);
 
 arrayReal<double> ifftHalf(const arrayComplex &ary);
 
-template<typename T>
-imageComplex fft2(const imageReal<T> &img) {
+template <typename T>
+imageComplex fft2(const imageReal<T> &img)
+{
     return fft2(img.template asType<double>());
 }
 
@@ -67,8 +67,9 @@ imageComplex fftShift2(const imageComplex &img);
 
 imageComplex ifftShift2(const imageComplex &img);
 
-template<typename T>
-imageComplex fft2Half(const imageReal<T> &img) {
+template <typename T>
+imageComplex fft2Half(const imageReal<T> &img)
+{
     return fft2Half(img.template asType<double>());
 }
 

@@ -4,7 +4,7 @@
  *
  * Copyright (C) 2021 Pattern Recognition and Bioinformatics Group, Shanghai Jiao Tong University
  *
- * Licensed under the MIT License (see LICENSE for details)
+ * Licensed under the GNU General Public License v3.0 (see LICENSE for details)
  *
  * All comments concerning this program package may be sent to the e-mail address 'yxchen11@sjtu.edu.cn'
  ***************************************************************************/
@@ -15,8 +15,8 @@
 #include "particle.h"
 #include "xmippXMD.h"
 
-
-phi shiftFFT(const imageReal<float> &imgX, const imageReal<float> &imgC) {
+phi shiftFFT(const imageReal<float> &imgX, const imageReal<float> &imgC)
+{
     if (imgX.shape[0] != imgC.shape[0] || imgX.shape[1] != imgC.shape[1])
         throw baseException("Error: Two images are not of the same shape!");
     imageComplex fx = fft2(imgX);
@@ -33,7 +33,8 @@ phi shiftFFT(const imageReal<float> &imgX, const imageReal<float> &imgC) {
     return r;
 }
 
-phi rotateFFT(const imageReal<float> &imgX, const imageReal<float> &imgC) {
+phi rotateFFT(const imageReal<float> &imgX, const imageReal<float> &imgC)
+{
     if (imgX.shape[0] != imgC.shape[0] || imgX.shape[1] != imgC.shape[1])
         throw baseException("Error: Two images are not of the same shape!");
     imageReal<float> px = polarBack(imgX, false);
@@ -49,8 +50,8 @@ phi rotateFFT(const imageReal<float> &imgX, const imageReal<float> &imgC) {
     return r;
 }
 
-
-phi shiftFFTX(const imageReal<float> &imgX, const imageReal<float> &imgC) {
+phi shiftFFTX(const imageReal<float> &imgX, const imageReal<float> &imgC)
+{
     if (imgX.shape[0] != imgC.shape[0] || imgX.shape[1] != imgC.shape[1])
         throw baseException("Error: Two images are not of the same shape!");
     int N = imgX.shape[0] * imgX.shape[1];
@@ -69,24 +70,24 @@ phi shiftFFTX(const imageReal<float> &imgX, const imageReal<float> &imgC) {
     return r;
 }
 
-
-phi rotateFFTX(const imageReal<float> &imgX, const imageReal<float> &imgC) {
+phi rotateFFTX(const imageReal<float> &imgX, const imageReal<float> &imgC)
+{
     arrayReal<double> corr = polarCorrelation(imgX, imgC);
     double ang = bestAngle(corr);
     phi r = {ang, 0, 0};
     return r;
 }
 
-
 /// version in python
-imageComplex polarFFT(const imageReal<float> &img) {
+imageComplex polarFFT(const imageReal<float> &img)
+{
     imageComplex f = fftShift2(fft2(img));
     imageReal<double> fr = f.abs();
-//    int *pos = fr.argmin();
-//    double r = std::sqrt(pos[0] * pos[0] + pos[1] * pos[1]);
-//    delete[] pos;
-//    imageReal<int> mask = circularMask(img.shape, r);
-//    fr = fr * mask;
+    //    int *pos = fr.argmin();
+    //    double r = std::sqrt(pos[0] * pos[0] + pos[1] * pos[1]);
+    //    delete[] pos;
+    //    imageReal<int> mask = circularMask(img.shape, r);
+    //    fr = fr * mask;
     for (int i = 0; i < 5; ++i)
         fr = hanning(fr);
     for (int i = 0; i < 1; ++i)
@@ -95,8 +96,8 @@ imageComplex polarFFT(const imageReal<float> &img) {
     return fft2(p);
 }
 
-
-phi alignFFT(const imageReal<float> &imgX, const imageReal<float> &imgC) {
+phi alignFFT(const imageReal<float> &imgX, const imageReal<float> &imgC)
+{
     imageReal<float> imgXD = denoiseSS(imgX);
     imageReal<float> imgCD = denoiseSS(imgC);
     imageComplex fx = polarFFT(imgXD);
@@ -109,8 +110,8 @@ phi alignFFT(const imageReal<float> &imgX, const imageReal<float> &imgC) {
     return angAll(ang, imgX, imgC);
 }
 
-
-phi angAll(double ang1, const imageReal<float> &imgX, const imageReal<float> &imgC, bool fineFlag) {
+phi angAll(double ang1, const imageReal<float> &imgX, const imageReal<float> &imgC, bool fineFlag)
+{
     imageReal<float> imgC1 = rotate(imgC, ang1);
     phi s1 = shiftFFTX(imgX, imgC1);
     imageReal<float> imgX1 = shift(rotate(imgC, ang1), s1.x, s1.y);
@@ -118,13 +119,16 @@ phi angAll(double ang1, const imageReal<float> &imgX, const imageReal<float> &im
     float corr1 = correntropy(imgX1, imgX);
     float corr = corr1;
 
-    if (fineFlag) {
-        for (int a = int(ang1) - 20; a < int(ang1) + 20; a += 2) {
+    if (fineFlag)
+    {
+        for (int a = int(ang1) - 20; a < int(ang1) + 20; a += 2)
+        {
             imageReal<float> imgC2 = rotate(imgC, a);
             phi s2 = shiftFFTX(imgX, imgC2);
             imageReal<float> imgX2 = shift(rotate(imgC, a), s2.x, s2.y);
             float corr2 = correntropy(imgX2, imgX);
-            if (corr < corr2) {
+            if (corr < corr2)
+            {
                 r = {static_cast<double>(a), s2.x, s2.y};
                 corr = corr2;
             }
@@ -132,12 +136,14 @@ phi angAll(double ang1, const imageReal<float> &imgX, const imageReal<float> &im
 
         double angP = r.ang;
 
-        for (int a = int(angP) - 1; a < int(angP) + 2; ++a) {
+        for (int a = int(angP) - 1; a < int(angP) + 2; ++a)
+        {
             imageReal<float> imgC2 = rotate(imgC, a);
             phi s2 = shiftFFTX(imgX, imgC2);
             imageReal<float> imgX2 = shift(imgC2, s2.x, s2.y);
             float corr2 = correntropy(imgX2, imgX);
-            if (corr < corr2) {
+            if (corr < corr2)
+            {
                 r = {static_cast<double>(a), s2.x, s2.y};
                 corr = corr2;
             }
@@ -149,7 +155,8 @@ phi angAll(double ang1, const imageReal<float> &imgX, const imageReal<float> &im
     phi s2 = shiftFFTX(imgX, imgC2);
     imageReal<float> imgX2 = shift(rotate(imgC, ang2), s2.x, s2.y);
     float corr2 = correntropy(imgX2, imgX);
-    if (corr < corr2) {
+    if (corr < corr2)
+    {
         r = {ang2, s2.x, s2.y};
         corr = corr2;
     }
@@ -159,8 +166,8 @@ phi angAll(double ang1, const imageReal<float> &imgX, const imageReal<float> &im
     return r;
 }
 
-
-phi alignFFT2(const imageReal<float> &imgX, const imageReal<float> &imgC) {
+phi alignFFT2(const imageReal<float> &imgX, const imageReal<float> &imgC)
+{
     imageReal<float> fx = fftShift2(fft2(imgX)).abs().asType<float>();
     imageReal<float> fc = fftShift2(fft2(imgC)).abs().asType<float>();
     arrayReal<double> corr = polarCorrelation(fx, fc);
@@ -168,17 +175,19 @@ phi alignFFT2(const imageReal<float> &imgX, const imageReal<float> &imgC) {
     return angAll(ang, imgX, imgC);
 }
 
-
-phi alignShiftPolar(const imageReal<float> &imgX, const imageReal<float> &imgC, int maxShiftX, int maxShiftY) {
+phi alignShiftPolar(const imageReal<float> &imgX, const imageReal<float> &imgC, int maxShiftX, int maxShiftY)
+{
     float corr = 0;
     phi r{};
     for (int i = 0; i < maxShiftX; ++i)
-        for (int j = 0; j < maxShiftY; ++j) {
+        for (int j = 0; j < maxShiftY; ++j)
+        {
             imageReal<float> imgXN = shift(imgX, -i, -j);
             phi ang = rotateFFT(imgXN, imgC);
             imageReal<float> imgCN = shift(rotate(imgC, ang.ang), i, j);
             float corrT = correntropy(imgX, imgCN);
-            if (corrT > corr) {
+            if (corrT > corr)
+            {
                 corr = corrT;
                 r = {ang.ang, static_cast<double>(i), static_cast<double>(j)};
             }
@@ -186,12 +195,13 @@ phi alignShiftPolar(const imageReal<float> &imgX, const imageReal<float> &imgC, 
     return r;
 }
 
-
-phi alignFFTX(const imageReal<float> &imgX, const imageReal<float> &imgC) {
+phi alignFFTX(const imageReal<float> &imgX, const imageReal<float> &imgC)
+{
     imageReal<float> tempsr = imgC;
     phi final{};
     phi psr;
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < 3; ++i)
+    {
         phi pTempS, pTempR;
         pTempS = shiftFFTX(imgX, tempsr);
         tempsr = shift(tempsr, pTempS.x, pTempS.y);
@@ -206,7 +216,8 @@ phi alignFFTX(const imageReal<float> &imgX, const imageReal<float> &imgC) {
     }
     imageReal<float> temprs = imgC;
     phi prs;
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < 3; ++i)
+    {
         phi pTempS, pTempR;
         pTempR = rotateFFTX(imgX, temprs);
         temprs = rotate(temprs, pTempR.ang);
@@ -228,31 +239,33 @@ phi alignFFTX(const imageReal<float> &imgX, const imageReal<float> &imgC) {
     return final;
 }
 
-
-imageReal<float> applyPhi(const imageReal<float> &img, phi p) {
+imageReal<float> applyPhi(const imageReal<float> &img, phi p)
+{
     imageReal<float> r = rotate(img, p.ang);
     r = shift(r, p.x, p.y);
     return r;
 }
 
-
-imageReal<float> inversePhi(const imageReal<float> &img, phi p) {
+imageReal<float> inversePhi(const imageReal<float> &img, phi p)
+{
     imageReal<float> r = shift(img, -p.x, -p.y);
     r = rotate(r, -p.ang);
     return r;
 }
 
-
-imageReal<float> reference(const stackReal<float> &stk, phi func(const imageReal<float> &imgX, const imageReal<float> &imgC)) {
+imageReal<float> reference(const stackReal<float> &stk, phi func(const imageReal<float> &imgX, const imageReal<float> &imgC))
+{
     if (stk.shape[0] == 1)
         return stk.pieceGet(0);
     long long l = stk.shape[0] % 2 == 1 ? stk.shape[0] / 2 + 1 : stk.shape[0] / 2;
     long long sp[3] = {l, stk.shape[1], stk.shape[2]};
     stackReal<float> s = stackReal<float>(sp);
     int count = 0;
-    for (int i = 0; i < stk.shape[0]; i += 2) {
+    for (int i = 0; i < stk.shape[0]; i += 2)
+    {
         imageReal<float> a = stk.pieceGet(i);
-        if (i + 1 >= stk.shape[0]) {
+        if (i + 1 >= stk.shape[0])
+        {
             break;
         }
         imageReal<float> b = stk.pieceGet(i + 1);
@@ -267,17 +280,19 @@ imageReal<float> reference(const stackReal<float> &stk, phi func(const imageReal
     return reference(s, func);
 }
 
-
-imageReal<float> reference(const stackReal<float> &stk, phi func(const imageReal<float> &imgX, const imageReal<float> &imgC, int width, bool fineFlag), int width, bool fineFlag) {
+imageReal<float> reference(const stackReal<float> &stk, phi func(const imageReal<float> &imgX, const imageReal<float> &imgC, int width, bool fineFlag), int width, bool fineFlag)
+{
     if (stk.shape[0] == 1)
         return stk.pieceGet(0);
     long long l = stk.shape[0] % 2 == 1 ? stk.shape[0] / 2 + 1 : stk.shape[0] / 2;
     long long sp[3] = {l, stk.shape[1], stk.shape[2]};
     stackReal<float> s = stackReal<float>(sp);
     int count = 0;
-    for (int i = 0; i < stk.shape[0]; i += 2) {
+    for (int i = 0; i < stk.shape[0]; i += 2)
+    {
         imageReal<float> a = stk.pieceGet(i);
-        if (i + 1 >= stk.shape[0]) {
+        if (i + 1 >= stk.shape[0])
+        {
             s.pieceSet(count, a);
             ++count;
             break;
@@ -294,18 +309,20 @@ imageReal<float> reference(const stackReal<float> &stk, phi func(const imageReal
     return reference(s, func, width, fineFlag);
 }
 
-
 imageReal<float> reference(const stackReal<float> &stk, phi func(const imageReal<float> &imgX, const imageReal<float> &imgC, int outWidth, int inWidth, float th, bool fineFlag),
-                           int outWidth, int inWidth, float th, bool fineFlag) {
+                           int outWidth, int inWidth, float th, bool fineFlag)
+{
     if (stk.shape[0] == 1)
         return stk.pieceGet(0);
     long long l = stk.shape[0] % 2 == 1 ? stk.shape[0] / 2 + 1 : stk.shape[0] / 2;
     long long sp[3] = {l, stk.shape[1], stk.shape[2]};
     stackReal<float> s = stackReal<float>(sp);
     int count = 0;
-    for (int i = 0; i < stk.shape[0]; i += 2) {
+    for (int i = 0; i < stk.shape[0]; i += 2)
+    {
         imageReal<float> a = stk.pieceGet(i);
-        if (i + 1 >= stk.shape[0]) {
+        if (i + 1 >= stk.shape[0])
+        {
             s.pieceSet(count, a);
             ++count;
             break;
@@ -322,15 +339,17 @@ imageReal<float> reference(const stackReal<float> &stk, phi func(const imageReal
     return reference(s, func, outWidth, inWidth, th, fineFlag);
 }
 
-
-imageReal<float> reference(const fileStack &stk, phi func(const imageReal<float> &imgX, const imageReal<float> &imgC)) {
+imageReal<float> reference(const fileStack &stk, phi func(const imageReal<float> &imgX, const imageReal<float> &imgC))
+{
     if (stk.shape[0] == 1)
         return stk.pieceGet(0);
     fileStack s = fileStack(stk.auxFolder, stk.auxFolderBack);
     int count = 0;
-    for (int i = 0; i < stk.shape[0]; i += 2) {
+    for (int i = 0; i < stk.shape[0]; i += 2)
+    {
         imageReal<float> a = stk.pieceGet(i);
-        if (i + 1 >= stk.shape[0]) {
+        if (i + 1 >= stk.shape[0])
+        {
             break;
         }
         imageReal<float> b = stk.pieceGet(i + 1);
@@ -351,8 +370,8 @@ imageReal<float> reference(const fileStack &stk, phi func(const imageReal<float>
     return reference(s, func);
 }
 
-
-imageReal<float> centerImage(const imageReal<float> &img) {
+imageReal<float> centerImage(const imageReal<float> &img)
+{
     float m = img.mean();
     imageReal<float> imgN = img - m;
     imageReal<int> mask = circularMask(img.shape, img.shape[0] / 2.0);
@@ -360,7 +379,8 @@ imageReal<float> centerImage(const imageReal<float> &img) {
     imageReal<float> imgX, imgY, imgXY;
     phi pFinal{};
 
-    for (int iter = 0; iter < 5; ++iter) {
+    for (int iter = 0; iter < 5; ++iter)
+    {
         imgC = imgC * mask;
         imgX = imgC.flipX();
         imgY = imgC.flipY();
@@ -369,23 +389,27 @@ imageReal<float> centerImage(const imageReal<float> &img) {
         phi p{};
 
         p = shiftFFTX(imgY, imgC);
-        if (std::abs(p.y) < img.shape[1] / 3.0) {
+        if (std::abs(p.y) < img.shape[1] / 3.0)
+        {
             shiftY += p.y;
             ny++;
         }
 
         p = shiftFFTX(imgX, imgC);
-        if (std::abs(p.x) < img.shape[0] / 3.0) {
+        if (std::abs(p.x) < img.shape[0] / 3.0)
+        {
             shiftX += p.x;
             nx++;
         }
 
         p = shiftFFTX(imgXY, imgC);
-        if (std::abs(p.x) < img.shape[0] / 3.0) {
+        if (std::abs(p.x) < img.shape[0] / 3.0)
+        {
             shiftX += p.x;
             nx++;
         }
-        if (std::abs(p.y) < img.shape[1] / 3.0) {
+        if (std::abs(p.y) < img.shape[1] / 3.0)
+        {
             shiftY += p.y;
             ny++;
         }
@@ -421,7 +445,8 @@ imageReal<float> centerImage(const imageReal<float> &img) {
             xf--;
         while (lineY[yf] < thY)
             yf--;
-        if (xf - x0 > yf - y0) {
+        if (xf - x0 > yf - y0)
+        {
             pFinal.ang -= 90;
             imgC = applyPhi(imgN, pFinal);
         }
@@ -434,8 +459,8 @@ imageReal<float> centerImage(const imageReal<float> &img) {
     return imgN;
 }
 
-
-imageReal<float> initReference(const stackReal<float> &stk) {
+imageReal<float> initReference(const stackReal<float> &stk)
+{
     long long shape[2] = {stk.shape[1], stk.shape[2]};
     imageReal<float> ref = imageReal<float>(shape);
     for (int i = 0; i < stk.shape[0]; ++i)
@@ -446,8 +471,8 @@ imageReal<float> initReference(const stackReal<float> &stk) {
     return ref;
 }
 
-
-imageReal<float> initReference(const fileStack &stk) {
+imageReal<float> initReference(const fileStack &stk)
+{
     long long shape[2] = {stk.shape[1], stk.shape[2]};
     imageReal<float> ref = imageReal<float>(shape);
     for (int i = 0; i < stk.shape[0]; ++i)
@@ -458,17 +483,19 @@ imageReal<float> initReference(const fileStack &stk) {
     return ref;
 }
 
-
-void refinement(stackReal<float> &stk, imageReal<float> &ref, phi func(const imageReal<float> &imgX, const imageReal<float> &imgC), bool updateFlag) {
+void refinement(stackReal<float> &stk, imageReal<float> &ref, phi func(const imageReal<float> &imgX, const imageReal<float> &imgC), bool updateFlag)
+{
     int N = stk.shape[0];
     double lambda = 1.0 / (N / 2.0);
     double lambdaP = 1 - lambda;
     phi p;
-    for (int i = 0; i < stk.shape[0]; ++i) {
+    for (int i = 0; i < stk.shape[0]; ++i)
+    {
         imageReal<float> piece = stk.pieceGet(i);
         p = func(ref, piece);
         imageReal<float> imgAl = applyPhi(piece, p);
-        if (updateFlag) {
+        if (updateFlag)
+        {
             ref = ref * lambdaP + imgAl * lambda;
             if (i % 10 == 0)
                 ref = centerImage(ref);
@@ -476,21 +503,23 @@ void refinement(stackReal<float> &stk, imageReal<float> &ref, phi func(const ima
         stk.pieceSet(i, imgAl);
     }
 }
-
 
 void refinement(stackReal<float> &stk, imageReal<float> &ref, phi func(const imageReal<float> &imgX, const imageReal<float> &imgC, int width, bool fineFlag), int width,
-                bool fineFlag, bool updateFlag) {
+                bool fineFlag, bool updateFlag)
+{
     int N = stk.shape[0];
     double lambda = 1.0 / (N / 2.0);
     double lambdaP = 1 - lambda;
     phi p;
-    for (int i = 0; i < stk.shape[0]; ++i) {
+    for (int i = 0; i < stk.shape[0]; ++i)
+    {
         imageReal<float> piece = stk.pieceGet(i);
-//        p = func(piece, ref, width, fineFlag);
-//        imageReal<float> imgAl = inversePhi(piece, p);
+        //        p = func(piece, ref, width, fineFlag);
+        //        imageReal<float> imgAl = inversePhi(piece, p);
         p = func(ref, piece, width, fineFlag);
         imageReal<float> imgAl = applyPhi(piece, p);
-        if (updateFlag) {
+        if (updateFlag)
+        {
             ref = ref * lambdaP + imgAl * lambda;
             if (i % 10 == 0)
                 ref = centerImage(ref);
@@ -499,20 +528,21 @@ void refinement(stackReal<float> &stk, imageReal<float> &ref, phi func(const ima
     }
 }
 
-
-void refinement(stackReal<float> &stk, imageReal<float> &ref, phi func(const imageReal<float> &imgX, const imageReal<float> &imgC, int outWidth, int inWidth, float th,
-                                                                       bool fineFlag), int outWidth, int inWidth, float th, bool fineFlag, bool updateFlag) {
+void refinement(stackReal<float> &stk, imageReal<float> &ref, phi func(const imageReal<float> &imgX, const imageReal<float> &imgC, int outWidth, int inWidth, float th, bool fineFlag), int outWidth, int inWidth, float th, bool fineFlag, bool updateFlag)
+{
     int N = stk.shape[0];
     double lambda = 1.0 / (N / 2.0);
     double lambdaP = 1 - lambda;
     phi p;
-    for (int i = 0; i < stk.shape[0]; ++i) {
+    for (int i = 0; i < stk.shape[0]; ++i)
+    {
         imageReal<float> piece = stk.pieceGet(i);
-//        p = func(piece, ref, outWidth, inWidth, th, fineFlag);
-//        imageReal<float> imgAl = inversePhi(piece, p);
+        //        p = func(piece, ref, outWidth, inWidth, th, fineFlag);
+        //        imageReal<float> imgAl = inversePhi(piece, p);
         p = func(ref, piece, outWidth, inWidth, th, fineFlag);
         imageReal<float> imgAl = applyPhi(piece, p);
-        if (updateFlag) {
+        if (updateFlag)
+        {
             ref = ref * lambdaP + imgAl * lambda;
             if (i % 10 == 0)
                 ref = centerImage(ref);
@@ -521,12 +551,13 @@ void refinement(stackReal<float> &stk, imageReal<float> &ref, phi func(const ima
     }
 }
 
-
 void outInfo(stackReal<float> &stk, imageReal<float> &ref, phi func(const imageReal<float> &imgX, const imageReal<float> &imgC),
-             std::vector<std::string> info, const std::string &xmdName) {
+             std::vector<std::string> info, const std::string &xmdName)
+{
     phi p;
     std::vector<std::string> xmd;
-    for (int i = 0; i < stk.shape[0]; ++i) {
+    for (int i = 0; i < stk.shape[0]; ++i)
+    {
         imageReal<float> piece = stk.pieceGet(i);
         p = func(ref, piece);
         imageReal<float> imgAl = applyPhi(piece, p);
@@ -538,12 +569,13 @@ void outInfo(stackReal<float> &stk, imageReal<float> &ref, phi func(const imageR
     writeXMD(xmd, xmdName);
 }
 
-
 void outInfo(stackReal<float> &stk, imageReal<float> &ref, phi func(const imageReal<float> &imgX, const imageReal<float> &imgC, int width, bool fineFlag),
-             std::vector<std::string> info, const std::string &xmdName, int width, bool fineFlag) {
+             std::vector<std::string> info, const std::string &xmdName, int width, bool fineFlag)
+{
     phi p;
     std::vector<std::string> xmd;
-    for (int i = 0; i < stk.shape[0]; ++i) {
+    for (int i = 0; i < stk.shape[0]; ++i)
+    {
         imageReal<float> piece = stk.pieceGet(i);
         p = func(ref, piece, width, fineFlag);
         imageReal<float> imgAl = applyPhi(piece, p);
@@ -555,12 +587,13 @@ void outInfo(stackReal<float> &stk, imageReal<float> &ref, phi func(const imageR
     writeXMD(xmd, xmdName);
 }
 
-
 void outInfo(stackReal<float> &stk, imageReal<float> &ref, phi func(const imageReal<float> &imgX, const imageReal<float> &imgC, int outWidth, int inWidth, float th, bool fineFlag),
-             std::vector<std::string> info, const std::string &xmdName, int outWidth, int inWidth, float th, bool fineFlag) {
+             std::vector<std::string> info, const std::string &xmdName, int outWidth, int inWidth, float th, bool fineFlag)
+{
     phi p;
     std::vector<std::string> xmd;
-    for (int i = 0; i < stk.shape[0]; ++i) {
+    for (int i = 0; i < stk.shape[0]; ++i)
+    {
         imageReal<float> piece = stk.pieceGet(i);
         p = func(ref, piece, outWidth, inWidth, th, fineFlag);
         imageReal<float> imgAl = applyPhi(piece, p);
@@ -572,13 +605,14 @@ void outInfo(stackReal<float> &stk, imageReal<float> &ref, phi func(const imageR
     writeXMD(xmd, xmdName);
 }
 
-
-void refinement(fileStack &stk, imageReal<float> &ref, phi func(const imageReal<float> &imgX, const imageReal<float> &imgC)) {
+void refinement(fileStack &stk, imageReal<float> &ref, phi func(const imageReal<float> &imgX, const imageReal<float> &imgC))
+{
     long long N = stk.shape[0];
     double lambda = 1.0 / (N / 2.0);
     double lambdaP = 1 - lambda;
     phi p;
-    for (int i = 0; i < stk.shape[0]; ++i) {
+    for (int i = 0; i < stk.shape[0]; ++i)
+    {
         imageReal<float> piece = stk.pieceGet(i);
         p = func(ref, piece);
         imageReal<float> imgAl = applyPhi(piece, p);
@@ -588,13 +622,14 @@ void refinement(fileStack &stk, imageReal<float> &ref, phi func(const imageReal<
     }
 }
 
-
-void refinementWithAux(stackReal<float> &stk, stackReal<float> &stkAux, imageReal<float> &ref) {
+void refinementWithAux(stackReal<float> &stk, stackReal<float> &stkAux, imageReal<float> &ref)
+{
     long long N = stk.shape[0];
     double lambda = 1.0 / (N / 2.0);
     double lambdaP = 1 - lambda;
     phi p;
-    for (int i = 0; i < stkAux.shape[0]; ++i) {
+    for (int i = 0; i < stkAux.shape[0]; ++i)
+    {
         imageReal<float> piece = stk.pieceGet(i);
         imageReal<float> pieceAux = stkAux.pieceGet(i);
         p = alignFFTX(ref, pieceAux);
@@ -608,8 +643,8 @@ void refinementWithAux(stackReal<float> &stk, stackReal<float> &stkAux, imageRea
     }
 }
 
-
-phi alignPower(const imageReal<float> &imgX, const imageReal<float> &imgC) {
+phi alignPower(const imageReal<float> &imgX, const imageReal<float> &imgC)
+{
     imageComplex fx = fftShift2(fft2(imgX));
     imageComplex fc = fftShift2(fft2(imgC));
     imageReal<double> spx = fx.abs();
@@ -622,8 +657,10 @@ phi alignPower(const imageReal<float> &imgX, const imageReal<float> &imgC) {
     arrayReal<int> angle = arrayReal<int>(360);
     double value = delta.abs().max();
     for (int i = 0; i < delta.shape[0]; ++i)
-        for (int j = 0; j < delta.shape[1]; ++j) {
-            if (std::abs(delta.get(i, j)) > value / 10) {
+        for (int j = 0; j < delta.shape[1]; ++j)
+        {
+            if (std::abs(delta.get(i, j)) > value / 10)
+            {
                 deltaZero.set(i, j, 1);
                 int ang = std::atan2(centerX - i, j - centerY) / M_PI / 2 * 360;
                 ang = ang < 0 ? ang + 180 : ang;
@@ -638,22 +675,28 @@ phi alignPower(const imageReal<float> &imgX, const imageReal<float> &imgC) {
     return p;
 }
 
-
-phi gravityCenter(const imageReal<float> &img, int x, int y, float rate = 0.8) {
+phi gravityCenter(const imageReal<float> &img, int x, int y, float rate = 0.8)
+{
     bool flag = true;
     int width = 1;
     float s = 0, sX = 0, sY = 0;
     float valueMax = img.get(x, y);
-    while (flag) {
+    while (flag)
+    {
         for (int i = x - width; i <= x + width; ++i)
-            for (int j = y - width; j <= y + width; ++j) {
+            for (int j = y - width; j <= y + width; ++j)
+            {
                 float value = img.get(i, j);
-                if (0 <= i && i < img.shape[0] && 0 <= j && j < img.shape[1]) {
-                    if (value > valueMax * rate) {
+                if (0 <= i && i < img.shape[0] && 0 <= j && j < img.shape[1])
+                {
+                    if (value > valueMax * rate)
+                    {
                         s += value;
                         sX += value * i;
                         sY += value * j;
-                    } else {
+                    }
+                    else
+                    {
                         flag = false;
                     }
                 }
@@ -662,12 +705,16 @@ phi gravityCenter(const imageReal<float> &img, int x, int y, float rate = 0.8) {
     }
     float xF = sX / s;
     float yF = sY / s;
-    phi r = {0, xF, yF,};
+    phi r = {
+        0,
+        xF,
+        yF,
+    };
     return r;
 }
 
-
-phi alignPeak(const imageReal<float> &imgX, const imageReal<float> &imgC) {
+phi alignPeak(const imageReal<float> &imgX, const imageReal<float> &imgC)
+{
     imageReal<double> fx = fftShift2(fft2(imgX)).abs();
     imageReal<double> fc = fftShift2(fft2(imgC)).abs();
     int centerX = fx.shape[0] / 2;
@@ -676,7 +723,8 @@ phi alignPeak(const imageReal<float> &imgX, const imageReal<float> &imgC) {
     fc = fc * fc / (fc.get(centerX, centerY) * fc.get(centerX, centerY));
     int width = imgX.shape[0] / 20;
     for (int i = centerX - width; i <= centerX + width; ++i)
-        for (int j = centerY - width; j <= centerY + width; ++j) {
+        for (int j = centerY - width; j <= centerY + width; ++j)
+        {
             fx.set(i, j, 0);
             fc.set(i, j, 0);
         }
@@ -696,15 +744,18 @@ phi alignPeak(const imageReal<float> &imgX, const imageReal<float> &imgC) {
     return angAll(angD, imgX, imgC);
 }
 
-int circleEstimatePeak(const stackReal<float> &stk, bool fineFlag) {
+int circleEstimatePeak(const stackReal<float> &stk, bool fineFlag)
+{
     imageReal<float> ref = stk.pieceGet(0);
     int r = 0;
     float v = 0;
     int start = stk.shape[1] / 40;
     int end = stk.shape[1] / 10;
-    for (int i = start; i < end; ++i) {
+    for (int i = start; i < end; ++i)
+    {
         imageReal<float> refTemp = ref.copy();
-        for (int j = 1; j < stk.shape[0]; ++j) {
+        for (int j = 1; j < stk.shape[0]; ++j)
+        {
             imageReal<float> img = stk.pieceGet(j);
             phi p = alignPeak(ref, img, i, fineFlag);
             imageReal<float> imgAl = applyPhi(img, p);
@@ -712,7 +763,8 @@ int circleEstimatePeak(const stackReal<float> &stk, bool fineFlag) {
         }
         refTemp = refTemp / stk.shape[0];
         float vT = correntropy(refTemp, ref);
-        if (vT > v) {
+        if (vT > v)
+        {
             v = vT;
             r = i;
         }
@@ -720,16 +772,18 @@ int circleEstimatePeak(const stackReal<float> &stk, bool fineFlag) {
     return r;
 }
 
-
-int circleEstimateShape(const stackReal<float> &stk, int inWidth, float th, bool fineFlag) {
+int circleEstimateShape(const stackReal<float> &stk, int inWidth, float th, bool fineFlag)
+{
     imageReal<float> ref = stk.pieceGet(0);
     int r = 0;
     float v = 0;
     int start = stk.shape[1] / 40;
     int end = stk.shape[1] / 10;
-    for (int i = start; i < end; ++i) {
+    for (int i = start; i < end; ++i)
+    {
         imageReal<float> refTemp = ref.copy();
-        for (int j = 1; j < stk.shape[0]; ++j) {
+        for (int j = 1; j < stk.shape[0]; ++j)
+        {
             imageReal<float> img = stk.pieceGet(j);
             phi p = alignShape(ref, img, i, inWidth, th, fineFlag);
             imageReal<float> imgAl = applyPhi(img, p);
@@ -737,14 +791,14 @@ int circleEstimateShape(const stackReal<float> &stk, int inWidth, float th, bool
         }
         refTemp = refTemp / stk.shape[0];
         float vT = correntropy(refTemp, ref);
-        if (vT > v) {
+        if (vT > v)
+        {
             v = vT;
             r = i;
         }
     }
     return r;
 }
-
 
 /** Gravity center is not used as default. You may uncomment code in this function and comment the
  * the corresponding part to use gravity center.
@@ -753,7 +807,8 @@ int circleEstimateShape(const stackReal<float> &stk, int inWidth, float th, bool
  * which could be estimated using function circleEstimate or be manually estimated.
  * **/
 
-phi alignPeak(const imageReal<float> &imgX, const imageReal<float> &imgC, int width, bool fineFlag) {
+phi alignPeak(const imageReal<float> &imgX, const imageReal<float> &imgC, int width, bool fineFlag)
+{
     imageReal<double> fx = fftShift2(fft2(imgX)).abs();
     imageReal<double> fc = fftShift2(fft2(imgC)).abs();
     int centerX = fx.shape[0] / 2;
@@ -763,46 +818,47 @@ phi alignPeak(const imageReal<float> &imgX, const imageReal<float> &imgC, int wi
     if (width == -1)
         width = imgX.shape[0] / 15;
     for (int i = centerX - width; i <= centerX + width; ++i)
-        for (int j = centerY - width; j <= centerY + width; ++j) {
-            if ((i - centerX) * (i - centerX) + (j - centerY) * (j - centerY) <= width * width) {
+        for (int j = centerY - width; j <= centerY + width; ++j)
+        {
+            if ((i - centerX) * (i - centerX) + (j - centerY) * (j - centerY) <= width * width)
+            {
                 fx.set(i, j, 0);
                 fc.set(i, j, 0);
             }
-
         }
     int *posX = fx.argmax();
     int xX = posX[0];
     int yX = posX[1];
-//    phi pX = gravityCenter(fx, xX, yX);
-//    double xXG = pX.x;
-//    double yXG = pX.y;
+    //    phi pX = gravityCenter(fx, xX, yX);
+    //    double xXG = pX.x;
+    //    double yXG = pX.y;
     delete[] posX;
     int *posC = fc.argmax();
     int xC = posC[0];
     int yC = posC[1];
-//    phi pC = gravityCenter(fc, xC, yC);
-//    double xCG = pC.x;
-//    double yCG = pC.y;
+    //    phi pC = gravityCenter(fc, xC, yC);
+    //    double xCG = pC.x;
+    //    double yCG = pC.y;
     delete[] posC;
-//    double angX = std::atan2(centerX - xXG, yXG - centerY) / 2 / M_PI * 360;
+    //    double angX = std::atan2(centerX - xXG, yXG - centerY) / 2 / M_PI * 360;
     double angX = std::atan2(centerX - xX, yX - centerY) / 2 / M_PI * 360;
     angX = angX < 0 ? angX + 360 : angX;
-//    double angC = std::atan2(centerX - xCG, yCG - centerY) / 2 / M_PI * 360;
+    //    double angC = std::atan2(centerX - xCG, yCG - centerY) / 2 / M_PI * 360;
     double angC = std::atan2(centerX - xC, yC - centerY) / 2 / M_PI * 360;
     angC = angC < 0 ? angC + 360 : angC;
     double angD = angX - angC < 0 ? angX - angC + 360 : angX - angC;
     return angAll(angD, imgX, imgC, fineFlag);
 }
 
-
-phi alignShape(const imageReal<float> &imgX, const imageReal<float> &imgC) {
+phi alignShape(const imageReal<float> &imgX, const imageReal<float> &imgC)
+{
     imageReal<double> fx = fftShift2(fft2(imgX)).abs();
     imageReal<double> fc = fftShift2(fft2(imgC)).abs();
     int centerX = fx.shape[0] / 2;
     int centerY = fx.shape[1] / 2;
     fx = fx * fx * fx;
     fc = fc * fc * fc;
-//    int outWidth = fx.shape[0] / 15;
+    //    int outWidth = fx.shape[0] / 15;
     int outWidth = 22;
     int inWidth = 0;
     int cornerSize = fx.shape[0] / 10;
@@ -812,7 +868,8 @@ phi alignShape(const imageReal<float> &imgX, const imageReal<float> &imgC) {
     double vx = cornerX.mean() * rate;
     double vc = cornerC.mean() * rate;
     for (int i = 0; i < fx.shape[0]; ++i)
-        for (int j = 0; j < fx.shape[1]; ++j) {
+        for (int j = 0; j < fx.shape[1]; ++j)
+        {
             int distance = (i - centerX) * (i - centerX) + (j - centerY) * (j - centerY);
             if (distance <= inWidth * inWidth or distance >= outWidth * outWidth or fx.get(i, j) < vx)
                 fx.set(i, j, 0);
@@ -825,8 +882,8 @@ phi alignShape(const imageReal<float> &imgX, const imageReal<float> &imgC) {
     return angAll(angD, imgX, imgC);
 }
 
-
-phi alignShape(const imageReal<float> &imgX, const imageReal<float> &imgC, int outWidth, int inWidth, float th, bool fineFlag) {
+phi alignShape(const imageReal<float> &imgX, const imageReal<float> &imgC, int outWidth, int inWidth, float th, bool fineFlag)
+{
     imageReal<double> fx = fftShift2(fft2(imgX)).abs();
     imageReal<double> fc = fftShift2(fft2(imgC)).abs();
     int centerX = fx.shape[0] / 2;
@@ -836,18 +893,21 @@ phi alignShape(const imageReal<float> &imgX, const imageReal<float> &imgC, int o
     if (inWidth == -1)
         inWidth = 0;
     double vx, vc;
-    if (th == -1) {
+    if (th == -1)
+    {
         int cornerSize = fx.shape[0] / 10;
         double rate = 1;
         imageReal<double> cornerX = fx.get(0, 0, cornerSize, cornerSize);
         imageReal<double> cornerC = fc.get(0, 0, cornerSize, cornerSize);
         vx = cornerX.mean() * rate;
         vc = cornerC.mean() * rate;
-    } else
+    }
+    else
         vx = vc = th;
 
     for (int i = 0; i < fx.shape[0]; ++i)
-        for (int j = 0; j < fx.shape[1]; ++j) {
+        for (int j = 0; j < fx.shape[1]; ++j)
+        {
             int distance = (i - centerX) * (i - centerX) + (j - centerY) * (j - centerY);
             if (distance <= inWidth * inWidth or distance >= outWidth * outWidth or fx.get(i, j) < vx)
                 fx.set(i, j, 0);
@@ -860,12 +920,13 @@ phi alignShape(const imageReal<float> &imgX, const imageReal<float> &imgC, int o
     return angAll(angD, imgX, imgC, fineFlag);
 }
 
-
-template<typename T>
-imageReal<int> thresholdAdjust(const imageReal<T> &img, T value) {
+template <typename T>
+imageReal<int> thresholdAdjust(const imageReal<T> &img, T value)
+{
     imageReal<int> r = imageReal<int>(img.shape);
     for (int i = 0; i < img.shape[0]; ++i)
-        for (int j = 0; j < img.shape[1]; ++j) {
+        for (int j = 0; j < img.shape[1]; ++j)
+        {
             if (img.get(i, j) < value)
                 r.set(i, j, 0);
             else
@@ -874,8 +935,8 @@ imageReal<int> thresholdAdjust(const imageReal<T> &img, T value) {
     return r;
 }
 
-
-phi alignParticle(const imageReal<float> &imgX, const imageReal<float> &imgC) {
+phi alignParticle(const imageReal<float> &imgX, const imageReal<float> &imgC)
+{
     int size = 320;
     arrayReal<int> recX = coordParticle(imgX, size);
     arrayReal<int> recC = coordParticle(imgC, size);

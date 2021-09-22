@@ -4,7 +4,7 @@
  *
  * Copyright (C) 2021 Pattern Recognition and Bioinformatics Group, Shanghai Jiao Tong University
  *
- * Licensed under the MIT License (see LICENSE for details)
+ * Licensed under the GNU General Public License v3.0 (see LICENSE for details)
  *
  * All comments concerning this program package may be sent to the e-mail address 'yxchen11@sjtu.edu.cn'
  ***************************************************************************/
@@ -12,15 +12,12 @@
 #ifndef ALIGNMENT_MRCHEADER_H
 #define ALIGNMENT_MRCHEADER_H
 
-
 /** reference website:
            * https://bio3d.colorado.edu/imod/doc/mrc_format.txt
            * https://www.ccpem.ac.uk/mrc_format/mrc2014.php */
 
-
 #include <fstream>
 #include <cstring>
-
 
 #define MODE_INT_8 0
 #define MODE_INT_16 1
@@ -29,8 +26,8 @@
 #define MODE_COMPLEX_32 4
 #define MODE_UINT_16 6
 
-
-class mrcHeader {
+class mrcHeader
+{
 private:
     int totalSize = 1024;
 
@@ -74,6 +71,5 @@ public:
 
     void write(std::ofstream &mrc) const;
 };
-
 
 #endif //ALIGNMENT_MRCHEADER_H

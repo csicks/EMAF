@@ -4,7 +4,7 @@
  *
  * Copyright (C) 2021 Pattern Recognition and Bioinformatics Group, Shanghai Jiao Tong University
  *
- * Licensed under the MIT License (see LICENSE for details)
+ * Licensed under the GNU General Public License v3.0 (see LICENSE for details)
  *
  * All comments concerning this program package may be sent to the e-mail address 'yxchen11@sjtu.edu.cn'
  ***************************************************************************/
@@ -16,10 +16,10 @@
 #include "fft.h"
 #include <vector>
 
-
 #define ACCURACY 1e-6
 
-class polar {
+class polar
+{
 public:
     arrayReal<double> radius;
     std::vector<arrayReal<double>> rings;
@@ -41,7 +41,6 @@ public:
     double *statistics();
 
     void normalize(double mean, double var);
-
 };
 
 double linear(double value, double left, double right);
@@ -51,6 +50,5 @@ double biLinear(const imageReal<float> &img, double x, double y);
 arrayReal<double> polarCorrelation(const imageReal<float> &img1, const imageReal<float> &img2);
 
 double bestAngle(const arrayReal<double> &ary);
-
 
 #endif //ALIGNMENT_POLAR_H

@@ -4,7 +4,7 @@
  *
  * Copyright (C) 2021 Pattern Recognition and Bioinformatics Group, Shanghai Jiao Tong University
  *
- * Licensed under the MIT License (see LICENSE for details)
+ * Licensed under the GNU General Public License v3.0 (see LICENSE for details)
  *
  * All comments concerning this program package may be sent to the e-mail address 'yxchen11@sjtu.edu.cn'
  ***************************************************************************/
@@ -12,11 +12,10 @@
 #ifndef ALIGNMENT_MATRIX_H
 #define ALIGNMENT_MATRIX_H
 
-
 #include "array1D.h"
 
-
-class matrix {
+class matrix
+{
 public:
     int shape[2]{};
     arrayReal<double> data;
@@ -56,29 +55,33 @@ public:
 
     matrix operator*(const matrix &matrixIn) const;
 
-    template<typename T>
-    matrix operator+(T value) const {
+    template <typename T>
+    matrix operator+(T value) const
+    {
         matrix matrixOut = matrix(shape);
         matrixOut.data = data + value;
         return matrixOut;
     }
 
-    template<typename T>
-    matrix operator-(T value) const {
+    template <typename T>
+    matrix operator-(T value) const
+    {
         matrix matrixOut = matrix(shape);
         matrixOut.data = data - value;
         return matrixOut;
     }
 
-    template<typename T>
-    matrix operator*(T value) const {
+    template <typename T>
+    matrix operator*(T value) const
+    {
         matrix matrixOut = matrix(shape);
         matrixOut.data = data * value;
         return matrixOut;
     }
 
-    template<typename T>
-    matrix operator/(T value) const {
+    template <typename T>
+    matrix operator/(T value) const
+    {
         matrix matrixOut = matrix(shape);
         matrixOut.data = data / value;
         return matrixOut;
@@ -93,12 +96,11 @@ public:
     matrix inverse() const;
 
     void print() const;
-
 };
 
-
 /// matrix used for transformation estimation, shape should be 3*3
-class matrixTransform : public matrix {
+class matrixTransform : public matrix
+{
 
 public:
     using matrix::matrix;
@@ -110,9 +112,6 @@ public:
     explicit matrixTransform(const matrix &m);
 
     matrixTransform &operator=(const matrixTransform &m);
-
-
 };
-
 
 #endif //ALIGNMENT_MATRIX_H
