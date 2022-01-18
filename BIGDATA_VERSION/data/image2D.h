@@ -6,7 +6,7 @@
  *
  * Licensed under the GNU General Public License v3.0 (see LICENSE for details)
  *
- * All comments concerning this program package may be sent to the e-mail address 'yxchen11@sjtu.edu.cn'
+ * All comments concerning this program package may be sent to e-mail address 'yxchen11@sjtu.edu.cn'
  ***************************************************************************/
 
 #ifndef ALIGNMENT_IMAGE2D_H
@@ -1172,4 +1172,4 @@ imageReal<int> circularMask(const long long shape[2], double radius);
 
 imageComplex bind(const imageReal<double> &abs, const imageReal<double> &angle);
 
-#endif //ALIGNMENT_IMAGE2D_H
+#endif // ALIGNMENT_IMAGE2D_H

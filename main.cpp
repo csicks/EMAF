@@ -6,7 +6,7 @@
  *
  * Licensed under the GNU General Public License v3.0 (see LICENSE for details)
  *
- * All comments concerning this program package may be sent to the e-mail address 'yxchen11@sjtu.edu.cn'
+ * All comments concerning this program package may be sent to e-mail address 'yxchen11@sjtu.edu.cn'
  ***************************************************************************/
 
 #include <iostream>
@@ -173,7 +173,7 @@ bool getParams(int argc, char *argv[], map<string, string> &params)
 /// Though some xmd files are supported, it is strongly suggested to convert input data into MRC format.
 /// When estimation of filter's parameters is not accurate, manually fine tuning might help.
 /// The source code is compiled into RELEASE version by default as specified in CMakeLists.txt. You may change it if DEBUG purpose is needed.
-/// This program temporally uses an INT variable to store the whole size of data (number_of_images * width * height). Then it might crash if the data size is too big. Consider using the BIGDATA version if data size is very large.
+/// This program temporally uses an INT variable to store the whole size of data (number_of_images * width * height). Then it might crash when the data size is too big. Consider using the BIGDATA version in such cases.
 /// If you would like to look into the code and want to run the program with less RAM, you may change "stackReal" in code to "fileStack" which would make use of the disk and greatly reduce the demand for RAM. Such change also helps with the big data size problem.
 /// Evaluation functions are provided in 'evaluation' folder with proper comments.
 int main(int argc, char *argv[])

@@ -6,15 +6,15 @@
  *
  * Licensed under the GNU General Public License v3.0 (see LICENSE for details)
  *
- * All comments concerning this program package may be sent to the e-mail address 'yxchen11@sjtu.edu.cn'
+ * All comments concerning this program package may be sent to e-mail address 'yxchen11@sjtu.edu.cn'
  ***************************************************************************/
 
 #ifndef ALIGNMENT_MRCHEADER_H
 #define ALIGNMENT_MRCHEADER_H
 
 /** reference website:
-           * https://bio3d.colorado.edu/imod/doc/mrc_format.txt
-           * https://www.ccpem.ac.uk/mrc_format/mrc2014.php */
+ * https://bio3d.colorado.edu/imod/doc/mrc_format.txt
+ * https://www.ccpem.ac.uk/mrc_format/mrc2014.php */
 
 #include <fstream>
 #include <cstring>
@@ -72,4 +72,4 @@ public:
     void write(std::ofstream &mrc) const;
 };
 
-#endif //ALIGNMENT_MRCHEADER_H
+#endif // ALIGNMENT_MRCHEADER_H

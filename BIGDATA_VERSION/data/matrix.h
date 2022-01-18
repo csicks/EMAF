@@ -6,7 +6,7 @@
  *
  * Licensed under the GNU General Public License v3.0 (see LICENSE for details)
  *
- * All comments concerning this program package may be sent to the e-mail address 'yxchen11@sjtu.edu.cn'
+ * All comments concerning this program package may be sent to e-mail address 'yxchen11@sjtu.edu.cn'
  ***************************************************************************/
 
 #ifndef ALIGNMENT_MATRIX_H
@@ -114,4 +114,4 @@ public:
     matrixTransform &operator=(const matrixTransform &m);
 };
 
-#endif //ALIGNMENT_MATRIX_H
+#endif // ALIGNMENT_MATRIX_H

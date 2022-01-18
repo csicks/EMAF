@@ -12,16 +12,16 @@
 - You may directly use the complied program `EMAF` in Linux commandline. Please input `./EMAF -h` to see commandline instructions. If some error occurs like GLIBC error, you may install the required libraries or consider compile from source code following the below instructions.
 - You may compile from source code using the following command in Linux system. CMake version 3.10 and above have been tested. You may change the [CMake File](./CMakeLists.txt) if other CMake version are used.
 
-```bash
-cd /path/to/README
-mkdir build
-cd build
-cmake ..
-make
-```
+  ```bash
+  cd /path/to/README
+  mkdir build
+  cd build
+  cmake ..
+  make
+  ```
 
 - Another possible way to use this algorithm is directly running code from main function in source code. This way may be suitable for people who would like to understand the code. Proper comments are provided in source code.
-- This program temporally uses an INT variable to store the whole size of data `number_of_images * width * height`. Then it might crash if the data size is too big. Consider using the [BIGDATA](./BIGDATA_VERSION/README.md) version if data size is very large.
+- This program temporally uses an INT variable to store the whole size of data `number_of_images * width * height`. Then it might crash when the data size is too big. Consider using the [BIGDATA](./BIGDATA_VERSION/README.md) version in such cases.
 - By now, only MRC format and certain XMD format are supported as input file. XMD format is used for XMIPP relied programs and only tested under certain cases. Therefore, data is strongly recommended to be converted to MRC format when it is feed into this program.
 
 ## Suggestions
@@ -35,4 +35,23 @@ make
   6. For real EMPIAR 10398 datasets, EMAF-MD with low pass filter width `s/20` is suggested.
 
 ## Others
-- Please refer to http://www.csbio.sjtu.edu.cn/bioinf/EMAF/ for some datasets and more information.
+- Please refer to http://www.csbio.sjtu.edu.cn/bioinf/EMAF/ for used datasets and more information.
+- All code is provided for research purpose and without any warranty. If you use  code or ideas from this project for your research, please cite our paper:
+  ```
+  @Article{Chen2021a,
+  author    = {Chen, Yu-Xuan and Xie, Rui and Yang, Yang and He, Lin and Feng, Dagan and Shen, Hong-Bin},
+  journal   = {J. Chem. Inf. Model.},
+  title     = {Fast Cryo-EM Image Alignment Algorithm Using Power Spectrum Features},
+  year      = {2021},
+  issn      = {1549-9596},
+  month     = sep,
+  number    = {9},
+  pages     = {4795--4806},
+  volume    = {61},
+  comment   = {doi: 10.1021/acs.jcim.1c00745},
+  doi       = {10.1021/acs.jcim.1c00745},
+  publisher = {American Chemical Society},
+  url       = {https://doi.org/10.1021/acs.jcim.1c00745},
+  }
+  ```
+- In codes of this version, there are some problems like odd-size FFT and integer overflow for big dataset. To keep the initial version of codes which comes out with the paper, this repo will not be updated anymore. Please refer to [new github repo](https://github.com/csicks/EM2) for corrections and updates.

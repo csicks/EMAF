@@ -6,7 +6,7 @@
  *
  * Licensed under the GNU General Public License v3.0 (see LICENSE for details)
  *
- * All comments concerning this program package may be sent to the e-mail address 'yxchen11@sjtu.edu.cn'
+ * All comments concerning this program package may be sent to e-mail address 'yxchen11@sjtu.edu.cn'
  ***************************************************************************/
 
 #ifndef ALIGNMENT_ARRAY1D_H
@@ -30,7 +30,7 @@ public:
     }
 };
 
-///only support numeric type: int, double, float
+/// only support numeric type: int, double, float
 template <typename T>
 class arrayReal
 {
@@ -68,7 +68,7 @@ public:
         memcpy(data, d, l * sizeof(T));
     }
 
-    ///zeros
+    /// zeros
     explicit arrayReal(long long l)
     {
         maxLength = l > maxLengthInit ? l : maxLengthInit;
@@ -561,7 +561,7 @@ public:
 
     arrayComplex(const double d[][2], long long l);
 
-    ///zeros
+    /// zeros
     explicit arrayComplex(long long l);
 
     ~arrayComplex();
@@ -620,7 +620,7 @@ public:
 
     arrayComplex operator/(const double value[2]) const;
 
-    ///only judge on real value
+    /// only judge on real value
     arrayReal<int> isNotInf() const;
 
     arrayComplex operator+(const arrayComplex &ary) const;
@@ -692,4 +692,4 @@ public:
 
 arrayComplex bind(const arrayReal<double> &abs, const arrayReal<double> &angle);
 
-#endif //ALIGNMENT_ARRAY1D_H
+#endif // ALIGNMENT_ARRAY1D_H

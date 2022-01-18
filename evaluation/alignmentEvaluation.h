@@ -6,7 +6,7 @@
  *
  * Licensed under the GNU General Public License v3.0 (see LICENSE for details)
  *
- * All comments concerning this program package may be sent to the e-mail address 'yxchen11@sjtu.edu.cn'
+ * All comments concerning this program package may be sent to e-mail address 'yxchen11@sjtu.edu.cn'
  ***************************************************************************/
 
 #ifndef ALIGNMENT_ALIGNMENTEVALUATION_H
@@ -25,8 +25,8 @@ stackReal<float> readData(const std::string &path);
 /// Alignment parameters stored in txt file, in format 'index angle shiftX shiftY'
 std::vector<std::vector<float>> readParams(const std::string &path);
 
-/** For functions below, they are used for synthetic datasets results evaluation, with 'dataPath' correspondind to particle 
- *  stacks which is named as 'stack.mrcs' in each folder in synthetic datasets, 'txtPath' correspondind to transformation 
+/** For functions below, they are used for synthetic datasets results evaluation, with 'dataPath' correspondind to particle
+ *  stacks which is named as 'stack.mrcs' in each folder in synthetic datasets, 'txtPath' correspondind to transformation
  *  recording text file which is named as 'parameters.txt' in each folder in synthetic datasets, and 'refPath' corresponding
  *  to origin image which is named 'ori.mrcs' in each synthetic dataset.
  * **/
@@ -69,4 +69,4 @@ void evaluatePairParamsHist(const std::string &dataPath, const std::string &txtP
 /// Average reference similarity
 void evaluateRefImage(const std::string &dataPath, const std::string &refPath, std::ofstream &fout);
 
-#endif //ALIGNMENT_ALIGNMENTEVALUATION_H
+#endif // ALIGNMENT_ALIGNMENTEVALUATION_H

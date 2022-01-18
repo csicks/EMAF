@@ -6,7 +6,7 @@
  *
  * Licensed under the GNU General Public License v3.0 (see LICENSE for details)
  *
- * All comments concerning this program package may be sent to the e-mail address 'yxchen11@sjtu.edu.cn'
+ * All comments concerning this program package may be sent to e-mail address 'yxchen11@sjtu.edu.cn'
  ***************************************************************************/
 
 #ifndef ALIGNMENT_ALIGNMENTEVALUATION_H
@@ -51,4 +51,4 @@ void evaluatePairParamsHist(const std::string &dataPath, const std::string &txtP
 
 void evaluateRefImage(const std::string &dataPath, const std::string &refPath, std::ofstream &fout);
 
-#endif //ALIGNMENT_ALIGNMENTEVALUATION_H
+#endif // ALIGNMENT_ALIGNMENTEVALUATION_H

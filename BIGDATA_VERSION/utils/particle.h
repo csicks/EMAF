@@ -6,7 +6,7 @@
  *
  * Licensed under the GNU General Public License v3.0 (see LICENSE for details)
  *
- * All comments concerning this program package may be sent to the e-mail address 'yxchen11@sjtu.edu.cn'
+ * All comments concerning this program package may be sent to e-mail address 'yxchen11@sjtu.edu.cn'
  ***************************************************************************/
 
 #ifndef ALIGNMENT_PARTICLE_H
@@ -61,4 +61,4 @@ imageReal<T> centerParticle(const imageReal<T> &img, int size = 80)
     return r;
 }
 
-#endif //ALIGNMENT_PARTICLE_H
+#endif // ALIGNMENT_PARTICLE_H

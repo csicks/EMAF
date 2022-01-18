@@ -6,7 +6,7 @@
  *
  * Licensed under the GNU General Public License v3.0 (see LICENSE for details)
  *
- * All comments concerning this program package may be sent to the e-mail address 'yxchen11@sjtu.edu.cn'
+ * All comments concerning this program package may be sent to e-mail address 'yxchen11@sjtu.edu.cn'
  ***************************************************************************/
 
 #ifndef ALIGNMENT_ALIGNFFT_H
@@ -122,4 +122,4 @@ phi alignShape(const imageReal<float> &imgX, const imageReal<float> &imgC, int o
 
 phi alignParticle(const imageReal<float> &imgX, const imageReal<float> &imgC);
 
-#endif //ALIGNMENT_ALIGNFFT_H
+#endif // ALIGNMENT_ALIGNFFT_H

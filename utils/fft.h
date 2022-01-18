@@ -6,14 +6,14 @@
  *
  * Licensed under the GNU General Public License v3.0 (see LICENSE for details)
  *
- * All comments concerning this program package may be sent to the e-mail address 'yxchen11@sjtu.edu.cn'
+ * All comments concerning this program package may be sent to e-mail address 'yxchen11@sjtu.edu.cn'
  ***************************************************************************/
 
 #ifndef ALIGNMENT_FFT_H
 #define ALIGNMENT_FFT_H
 
 /** reference website:
-           * http://www.fftw.org/fftw3_doc/ */
+ * http://www.fftw.org/fftw3_doc/ */
 
 #include <fftw3.h>
 #include <cstring>
@@ -77,4 +77,4 @@ imageComplex fft2Half(const imageReal<double> &img);
 
 imageReal<double> ifft2Half(const imageComplex &img);
 
-#endif //ALIGNMENT_FFT_H
+#endif // ALIGNMENT_FFT_H

@@ -6,7 +6,7 @@
  *
  * Licensed under the GNU General Public License v3.0 (see LICENSE for details)
  *
- * All comments concerning this program package may be sent to the e-mail address 'yxchen11@sjtu.edu.cn'
+ * All comments concerning this program package may be sent to e-mail address 'yxchen11@sjtu.edu.cn'
  ***************************************************************************/
 
 #ifndef ALIGNMENT_STACK3D_H
@@ -223,4 +223,4 @@ stackComplex image2Stack(const imageComplex &img);
 
 stackComplex image2Stack(const imageComplex img[], int l);
 
-#endif //ALIGNMENT_STACK3D_H
+#endif // ALIGNMENT_STACK3D_H

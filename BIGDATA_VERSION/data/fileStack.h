@@ -6,7 +6,7 @@
  *
  * Licensed under the GNU General Public License v3.0 (see LICENSE for details)
  *
- * All comments concerning this program package may be sent to the e-mail address 'yxchen11@sjtu.edu.cn'
+ * All comments concerning this program package may be sent to e-mail address 'yxchen11@sjtu.edu.cn'
  ***************************************************************************/
 
 #ifndef ALIGNMENT_FILESTACK_H
@@ -49,4 +49,4 @@ public:
     void append(const imageReal<float> &img);
 };
 
-#endif //ALIGNMENT_FILESTACK_H
+#endif // ALIGNMENT_FILESTACK_H
