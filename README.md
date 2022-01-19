@@ -54,4 +54,4 @@
   url       = {https://doi.org/10.1021/acs.jcim.1c00745},
   }
   ```
-- In codes of this version, there are some problems like odd-size FFT and integer overflow for big dataset. To keep the initial version of codes which comes out with the paper, this repo will not be updated anymore. Please refer to [new github repo](https://github.com/csicks/EM2) for corrections and updates.
+- In codes of this version, there are some problems like odd-size FFT and integer overflow for big dataset. To keep the initial version of codes which comes out with the paper, this version will not be updated anymore. Please checkout the main branch for corrections and updates.
