@@ -9,25 +9,32 @@
  * All comments concerning this program package may be sent to e-mail address 'yxchen11@sjtu.edu.cn'
  ***************************************************************************/
 
-/** Since no specific documentation of xmd files is found, this code Match the xmd format in SPREAD
- * and NCEM, with no guarantee for other xmd files.
- **/
+#ifndef EM_XMIPPXMD_H
+#define EM_XMIPPXMD_H
 
-#ifndef ALIGNMENT_XMIPPXMD_H
-#define ALIGNMENT_XMIPPXMD_H
+/** @file
+ * this file contains functions for reading/writing XMD file in XMIPP
+ * currently, only limited typed of XMD files are supported (those used in SPREAD)
+*/
 
 #include <fstream>
 #include <sstream>
 #include <set>
 #include "stack3D.h"
-#include "mrcFile.h"
+#include "mrc.h"
 
-stackReal<float> readXMD(const std::string &path, std::vector<std::string> &info);
+/// read XMD file to get data and header information
+stackReal<double> readXMD(const std::string &path, std::vector<std::string> &info);
 
+/** fill string numbers with fixed length, like zfill in python
+ * @example "12".zfill(5) -> "00012"
+*/
 std::string zfill(const std::string &number, int length);
 
+/// generate information for certain XMD files
 void generateInfo(const std::string &path, int number, std::vector<std::string> &info);
 
+/// write data and header information to XMD file
 void writeXMD(const std::vector<std::string> &info, const std::string &name);
 
-#endif // ALIGNMENT_XMIPPXMD_H
+#endif //EM_XMIPPXMD_H

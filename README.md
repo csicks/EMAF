@@ -21,7 +21,6 @@
   ```
 
 - Another possible way to use this algorithm is directly running code from main function in source code. This way may be suitable for people who would like to understand the code. Proper comments are provided in source code.
-- This program temporally uses an INT variable to store the whole size of data `number_of_images * width * height`. Then it might crash when the data size is too big. Consider using the [BIGDATA](./BIGDATA_VERSION/README.md) version in such cases.
 - By now, only MRC format and certain XMD format are supported as input file. XMD format is used for XMIPP relied programs and only tested under certain cases. Therefore, data is strongly recommended to be converted to MRC format when it is feed into this program.
 
 ## Suggestions
@@ -54,4 +53,3 @@
   url       = {https://doi.org/10.1021/acs.jcim.1c00745},
   }
   ```
-- In codes of this version, there are some problems like odd-size FFT and integer overflow for big dataset. To keep the initial version of codes which comes out with the paper, this version will not be updated anymore. Please checkout the main branch for corrections and updates.

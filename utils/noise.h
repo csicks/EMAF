@@ -9,47 +9,55 @@
  * All comments concerning this program package may be sent to e-mail address 'yxchen11@sjtu.edu.cn'
  ***************************************************************************/
 
-#ifndef ALIGNMENT_NOISE_H
-#define ALIGNMENT_NOISE_H
+#ifndef EM_NOISE_H
+#define EM_NOISE_H
+
+/** @file
+ * this file contains functions for dealing with noise
+*/
 
 #include "image2D.h"
 #include "fft.h"
 
-float randomReal(float minValue, float maxValue);
+/// @return random float value between minValue and maxValue
+double randomReal(double minValue, double maxValue);
 
+/// @return random integer value between minValue and maxValue
 int randomInt(int minValue, int maxValue);
 
-template <typename T>
-imageReal<float> gaussianNoise(const imageReal<T> &img, double rate)
-{
+/** add Gaussian noise to image
+ * @param rate: var(noise)/var(image)
+ * @return noisy image for rate
+*/
+template<typename T>
+imageReal<double> gaussianNoise(const imageReal<T> &img, double rate) {
     double m1 = img.min();
     double m2 = img.max();
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    imageReal<float> r;
-    if (typeid(T) != typeid(float))
-        r = img.copy().template asType<float>();
+    imageReal<double> r;
+    if (typeid(T) != typeid(double))
+        r = img.copy().template asType<double>();
     else
         r = img.copy();
-    float var = rate * img.var();
+    double var = rate * img.var();
 
     std::default_random_engine generator(seed);
     std::normal_distribution<double> distribution(0.0, std::sqrt(var));
-    for (int i = 0; i < r.data.length; ++i)
-    {
-        auto gr = static_cast<float>(distribution(generator));
-        float value = r.data[i] + gr;
+    for (int i = 0; i < r.data.length; ++i) {
+        auto gr = static_cast<double>(distribution(generator));
+        double value = r.data[i] + gr;
         r.data[i] = value > m2 ? m2 : value;
         r.data[i] = value < m1 ? m1 : r.data[i];
     }
     return r;
 }
 
-template <typename T>
-imageReal<float> denoiseSS(const imageReal<T> &img)
-{
+/// simple denoise for image by reduce Fourier spectrum by corner values
+template<typename T>
+imageReal<double> denoiseSS(const imageReal<T> &img) {
     imageComplex f = fftShift2(fft2(img));
     imageReal<double> fa = f.abs();
-    imageReal<double> ang = f.angle();
+    imageReal<double> angle = f.angle();
     fa = fa * fa;
     int width = fa.shape[0] / 10;
     double value = 0;
@@ -61,26 +69,27 @@ imageReal<float> denoiseSS(const imageReal<T> &img)
     fa = fa - value;
     fa = fa.clip(0, INFINITY);
     fa = fa.sqrt();
-    imageComplex nf = bind(fa, ang);
+    imageComplex nf = bind(fa, angle);
     nf = ifftShift2(nf);
-    imageReal<float> r = ifft2C(nf).abs().asType<float>();
+    imageReal<double> r = ifft2C(nf).abs();
     return r;
 }
 
-template <typename T1, typename T2>
-imageReal<float> convolutionSpace(const imageReal<T1> &img, const imageReal<T2> &kernel)
-{
-    if (kernel.shape[0] % 2 == 0 || kernel.shape[1] % 2 == 0)
+/** convolution for input image and convolution kernel
+ * @implements perform convolution in space domain
+ * @deprecated
+*/
+template<typename T1, typename T2>
+imageReal<double> convolutionSpace(const imageReal<T1> &img, const imageReal<T2> &kernel) {
+    if (kernel.shape[0] % 2 == 0 or kernel.shape[1] % 2 == 0)
         throw baseException("Error: Size of convolution kernel should be odd integer!");
-    imageReal<float> r = imageReal<float>(img.shape);
+    imageReal<double> r = imageReal<double>(img.shape);
     int h = (kernel.shape[0] - 1) / 2, w = (kernel.shape[1] - 1) / 2;
     for (int i = 0; i < img.shape[0]; ++i)
-        for (int j = 0; j < img.shape[1]; ++j)
-        {
-            float value = 0;
+        for (int j = 0; j < img.shape[1]; ++j) {
+            double value = 0;
             for (int m = -h; m <= h; ++m)
-                for (int n = -w; n <= w; ++n)
-                {
+                for (int n = -w; n <= w; ++n) {
                     int kx = h + m, ky = w + n, ix = i + m, iy = j + n;
                     if (ix < 0)
                         ix += img.shape[0];
@@ -97,10 +106,12 @@ imageReal<float> convolutionSpace(const imageReal<T1> &img, const imageReal<T2> 
     return r;
 }
 
-template <typename T1, typename T2>
-imageReal<float> convolutionFourier(const imageReal<T1> &img, const imageReal<T2> &kernel)
-{
-    if (kernel.shape[0] % 2 == 0 || kernel.shape[1] % 2 == 0)
+/** convolution for input image and convolution kernel
+ * @implements perform multiplication in Fourier domain to speed up convolution
+*/
+template<typename T1, typename T2>
+imageReal<double> convolutionFourier(const imageReal<T1> &img, const imageReal<T2> &kernel) {
+    if (kernel.shape[0] % 2 == 0 or kernel.shape[1] % 2 == 0)
         throw baseException("Error: Size of convolution kernel should be odd integer!");
     int h = (kernel.shape[0] - 1) / 2, w = (kernel.shape[1] - 1) / 2;
     imageReal<T1> imgP = padding(img, h, h, w, w, PAD_WARP);
@@ -126,27 +137,27 @@ imageReal<float> convolutionFourier(const imageReal<T1> &img, const imageReal<T2
     imageReal<double> rP = ifft2C(fr).real();
 
     rP = rP.get(h, w, img.shape[0], img.shape[1]);
-
-    imageReal<float> r = rP.asType<float>();
-
-    return r;
+    return rP;
 }
 
-template <typename T>
-imageReal<float> gaussianBlur(const imageReal<T> &img, int size = 3)
-{
+/** add Gaussian to input image
+ * @param size: size of Gaussian kernel
+ * @return blurred image
+*/
+template<typename T>
+imageReal<double> gaussianBlur(const imageReal<T> &img, int size = 3) {
     double sigma = 0.3 * ((size - 1) * 0.5 - 1) + 0.8;
     int s[2] = {size, size};
     imageReal<double> kernel = imageReal<double>(s);
     int c = (size + 1) / 2;
     for (int i = 0; i < size; ++i)
-        for (int j = 0; j < size; ++j)
-        {
-            double value = 1 / (2 * M_PI * sigma * sigma) * exp(-((i - c) * (i - c) + (j - c) * (j - c)) / (2 * sigma * sigma));
+        for (int j = 0; j < size; ++j) {
+            double value = 1 / (2 * M_PI * sigma * sigma) *
+                           exp(-((i - c) * (i - c) + (j - c) * (j - c)) / (2 * sigma * sigma));
             kernel.set(i, j, value);
         }
     kernel = kernel / kernel.sum();
     return convolutionFourier(img, kernel);
 }
 
-#endif //ALIGNMENT_NOISE_H
+#endif //EM_NOISE_H

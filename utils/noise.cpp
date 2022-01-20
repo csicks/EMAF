@@ -11,17 +11,15 @@
 
 #include "noise.h"
 
-float randomReal(float minValue, float maxValue)
-{
+double randomReal(double minValue, double maxValue) {
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine generator(seed);
-    std::uniform_real_distribution<float> distribution(minValue, maxValue);
-    auto gr = static_cast<float>(distribution(generator));
+    std::uniform_real_distribution<double> distribution(minValue, maxValue);
+    auto gr = static_cast<double>(distribution(generator));
     return gr;
 }
 
-int randomInt(int minValue, int maxValue)
-{
+int randomInt(int minValue, int maxValue) {
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine generator(seed);
     std::uniform_int_distribution<int> distribution(minValue, maxValue);

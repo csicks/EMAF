@@ -13,7 +13,7 @@
 
 arrayComplex fft(const arrayReal<double> &ary)
 {
-    int N = ary.length;
+    int N = static_cast<int>(ary.length);
     double *in;
     fftw_complex *out;
     fftw_plan p;
@@ -21,7 +21,7 @@ arrayComplex fft(const arrayReal<double> &ary)
     in = static_cast<double *>(fftw_malloc(sizeof(double) * N));
     out = static_cast<fftw_complex *>(fftw_malloc(sizeof(fftw_complex) * N));
 
-    if ((in == nullptr) || (out == nullptr))
+    if (in == nullptr or out == nullptr)
     {
         throw baseException("Error: Insufficient available memory for FFT!");
     }
@@ -33,7 +33,7 @@ arrayComplex fft(const arrayReal<double> &ary)
         fftw_execute(p);
         fftw_destroy_plan(p);
 
-        int index = std::ceil(N / 2.0) + 1;
+        int index = N / 2 + 1;
 
         for (int i = index; i < N; ++i)
         {
@@ -51,7 +51,7 @@ arrayComplex fft(const arrayReal<double> &ary)
 
 arrayComplex fft(const arrayComplex &ary)
 {
-    int N = ary.length;
+    int N = static_cast<int>(ary.length);
     fftw_complex *in;
     fftw_complex *out;
     fftw_plan p;
@@ -59,7 +59,7 @@ arrayComplex fft(const arrayComplex &ary)
     in = static_cast<fftw_complex *>(fftw_malloc(sizeof(fftw_complex) * N));
     out = static_cast<fftw_complex *>(fftw_malloc(sizeof(fftw_complex) * N));
 
-    if ((in == nullptr) || (out == nullptr))
+    if (in == nullptr or out == nullptr)
     {
         throw baseException("Error: Insufficient available memory for FFT!");
     }
@@ -86,7 +86,7 @@ arrayComplex fft(const arrayComplex &ary)
 
 arrayComplex ifftC(const arrayComplex &ary)
 {
-    int N = ary.length;
+    int N = static_cast<int>(ary.length);
     fftw_complex *in;
     fftw_complex *out;
     fftw_plan p;
@@ -94,7 +94,7 @@ arrayComplex ifftC(const arrayComplex &ary)
     in = static_cast<fftw_complex *>(fftw_malloc(sizeof(fftw_complex) * N));
     out = static_cast<fftw_complex *>(fftw_malloc(sizeof(fftw_complex) * N));
 
-    if ((in == nullptr) || (out == nullptr))
+    if (in == nullptr or out == nullptr)
     {
         throw baseException("Error: Insufficient available memory for FFT!");
     }
@@ -121,16 +121,16 @@ arrayComplex ifftC(const arrayComplex &ary)
 
 arrayReal<double> ifftR(const arrayComplex &ary)
 {
-    int N = ary.length;
+    int N = static_cast<int>(ary.length);
     fftw_complex *in;
-    int index = std::ceil(N / 2.0) + 1;
+    int index = N / 2 + 1;
     double *out;
     fftw_plan p;
 
     in = static_cast<fftw_complex *>(fftw_malloc(sizeof(fftw_complex) * index));
     out = static_cast<double *>(fftw_malloc(sizeof(double) * N));
 
-    if ((in == nullptr) || (out == nullptr))
+    if (in == nullptr or out == nullptr)
     {
         throw baseException("Error: Insufficient available memory for FFT!");
     }
@@ -158,28 +158,27 @@ arrayReal<double> ifftR(const arrayComplex &ary)
 arrayComplex fftShift(const arrayComplex &ary)
 {
     arrayComplex aryOut = arrayComplex(ary.length);
-    for (int i = 0; i < ary.length / 2; ++i)
-    {
-        aryOut.data[2 * i] = ary.data[ary.length + 2 * i];
-        aryOut.data[2 * i + 1] = ary.data[ary.length + 2 * i + 1];
-    }
-    for (int i = ary.length / 2; i < ary.length; ++i)
-    {
-        aryOut.data[2 * i] = ary.data[-ary.length + 2 * i];
-        aryOut.data[2 * i + 1] = ary.data[-ary.length + 2 * i + 1];
-    }
+    int half0 = static_cast<int>(ary.length) / 2;
+    int half1 = ary.length % 2 == 1 ? half0 + 1 : half0;
+    memcpy(aryOut.data, ary.data + 2 * half1, 2 * half0 * sizeof(double));
+    memcpy(aryOut.data + 2 * half0, ary.data, 2 * half1 * sizeof(double));
     return aryOut;
 }
 
 arrayComplex ifftShift(const arrayComplex &ary)
 {
-    return fftShift(ary);
+    arrayComplex aryOut = arrayComplex(ary.length);
+    int half0 = static_cast<int>(ary.length) / 2;
+    int half1 = ary.length % 2 == 1 ? half0 + 1 : half0;
+    memcpy(aryOut.data, ary.data + 2 * half0, 2 * half1 * sizeof(double));
+    memcpy(aryOut.data + 2 * half1, ary.data, 2 * half0 * sizeof(double));
+    return aryOut;
 }
 
 arrayComplex fftHalf(const arrayReal<double> &ary)
 {
-    int N = ary.length;
-    int width = std::ceil(N / 2.0) + 1;
+    int N = static_cast<int>(ary.length);
+    int width = N / 2 + 1;
     double *in;
     fftw_complex *out;
     fftw_plan p;
@@ -187,7 +186,7 @@ arrayComplex fftHalf(const arrayReal<double> &ary)
     in = static_cast<double *>(fftw_malloc(sizeof(double) * N));
     out = static_cast<fftw_complex *>(fftw_malloc(sizeof(fftw_complex) * width));
 
-    if ((in == nullptr) || (out == nullptr))
+    if (in == nullptr or out == nullptr)
     {
         throw baseException("Error: Insufficient available memory for FFT!");
     }
@@ -207,10 +206,10 @@ arrayComplex fftHalf(const arrayReal<double> &ary)
     return aryOut;
 }
 
-arrayReal<double> ifftHalf(const arrayComplex &ary)
+arrayReal<double> ifftHalf(const arrayComplex &ary, int originLength)
 {
-    int N = ary.length;
-    int width = 2 * N - 2;
+    int N = static_cast<int>(ary.length);
+    int width = originLength % 2 == 1 ? 2 * N - 1 : 2 * N - 2;
     fftw_complex *in;
     double *out;
     fftw_plan p;
@@ -218,7 +217,7 @@ arrayReal<double> ifftHalf(const arrayComplex &ary)
     in = static_cast<fftw_complex *>(fftw_malloc(sizeof(fftw_complex) * N));
     out = static_cast<double *>(fftw_malloc(sizeof(double) * width));
 
-    if ((in == nullptr) || (out == nullptr))
+    if (in == nullptr or out == nullptr)
     {
         throw baseException("Error: Insufficient available memory for FFT!");
     }
@@ -245,9 +244,9 @@ arrayReal<double> ifftHalf(const arrayComplex &ary)
 
 imageComplex fft2(const imageReal<double> &img)
 {
-    int N = img.shape[0] * img.shape[1];
-    int width = std::ceil(img.shape[1] / 2.0) + 1;
-    int N2 = img.shape[0] * width;
+    size_t N = static_cast<size_t>(img.shape[0]) * img.shape[1];
+    int width = img.shape[1] / 2 + 1;
+    size_t N2 = static_cast<size_t>(img.shape[0]) * width;
     double *in;
     fftw_complex *out;
     fftw_plan p;
@@ -255,7 +254,7 @@ imageComplex fft2(const imageReal<double> &img)
     in = static_cast<double *>(fftw_malloc(sizeof(double) * N));
     out = static_cast<fftw_complex *>(fftw_malloc(sizeof(fftw_complex) * N2));
 
-    if ((in == nullptr) || (out == nullptr))
+    if (in == nullptr or out == nullptr)
     {
         throw baseException("Error: Insufficient available memory for FFT!");
     }
@@ -306,7 +305,7 @@ imageComplex fft2(const imageReal<double> &img)
 
 imageComplex fft2(const imageComplex &img)
 {
-    int N = img.shape[0] * img.shape[1];
+    size_t N = static_cast<size_t>(img.shape[0]) * img.shape[1];
     fftw_complex *in;
     fftw_complex *out;
     fftw_plan p;
@@ -314,7 +313,7 @@ imageComplex fft2(const imageComplex &img)
     in = static_cast<fftw_complex *>(fftw_malloc(sizeof(fftw_complex) * N));
     out = static_cast<fftw_complex *>(fftw_malloc(sizeof(fftw_complex) * N));
 
-    if ((in == nullptr) || (out == nullptr))
+    if (in == nullptr or out == nullptr)
     {
         throw baseException("Error: Insufficient available memory for FFT!");
     }
@@ -322,7 +321,7 @@ imageComplex fft2(const imageComplex &img)
     {
         p = fftw_plan_dft_2d(img.shape[0], img.shape[1], in, out, FFTW_FORWARD, FFTW_ESTIMATE);
 
-        for (int i = 0; i < N; ++i)
+        for (size_t i = 0; i < N; ++i)
         {
             double *temp = img.data[i];
             in[i][0] = temp[0];
@@ -335,7 +334,6 @@ imageComplex fft2(const imageComplex &img)
     }
 
     arrayComplex aryOut = arrayComplex(out, N);
-
     imageComplex imgOut = imageComplex(aryOut, img.shape);
 
     fftw_free(in);
@@ -345,7 +343,7 @@ imageComplex fft2(const imageComplex &img)
 
 imageComplex ifft2C(const imageComplex &img)
 {
-    int N = img.shape[0] * img.shape[1];
+    size_t N = static_cast<size_t>(img.shape[0]) * img.shape[1];
     fftw_complex *in;
     fftw_complex *out;
     fftw_plan p;
@@ -353,7 +351,7 @@ imageComplex ifft2C(const imageComplex &img)
     in = static_cast<fftw_complex *>(fftw_malloc(sizeof(fftw_complex) * N));
     out = static_cast<fftw_complex *>(fftw_malloc(sizeof(fftw_complex) * N));
 
-    if ((in == nullptr) || (out == nullptr))
+    if (in == nullptr or out == nullptr)
     {
         throw baseException("Error: Insufficient available memory for FFT!");
     }
@@ -361,7 +359,7 @@ imageComplex ifft2C(const imageComplex &img)
     {
         p = fftw_plan_dft_2d(img.shape[0], img.shape[1], in, out, FFTW_BACKWARD, FFTW_ESTIMATE);
 
-        for (int i = 0; i < N; ++i)
+        for (size_t i = 0; i < N; ++i)
         {
             double *temp = img.data[i];
             in[i][0] = temp[0];
@@ -374,8 +372,7 @@ imageComplex ifft2C(const imageComplex &img)
     }
 
     arrayComplex aryOut = arrayComplex(out, N);
-
-    imageComplex imgOut = imageComplex(aryOut, img.shape) / N;
+    imageComplex imgOut = imageComplex(aryOut, img.shape) / static_cast<double>(N);
 
     fftw_free(in);
     fftw_free(out);
@@ -384,9 +381,9 @@ imageComplex ifft2C(const imageComplex &img)
 
 imageReal<double> ifft2R(const imageComplex &img)
 {
-    int N = img.shape[0] * img.shape[1];
-    int width = std::ceil(img.shape[1] / 2.0) + 1;
-    int N2 = img.shape[0] * width;
+    size_t N = static_cast<size_t>(img.shape[0]) * img.shape[1];
+    int width = img.shape[1] / 2 + 1;
+    size_t N2 = static_cast<size_t>(img.shape[0]) * width;
     fftw_complex *in;
     double *out;
     fftw_plan p;
@@ -394,7 +391,7 @@ imageReal<double> ifft2R(const imageComplex &img)
     in = static_cast<fftw_complex *>(fftw_malloc(sizeof(fftw_complex) * N2));
     out = static_cast<double *>(fftw_malloc(sizeof(double) * N));
 
-    if ((in == nullptr) || (out == nullptr))
+    if (in == nullptr or out == nullptr)
     {
         throw baseException("Error: Insufficient available memory for FFT!");
     }
@@ -418,7 +415,6 @@ imageReal<double> ifft2R(const imageComplex &img)
     }
 
     arrayReal<double> aryOut = arrayReal<double>(out, N);
-
     imageReal<double> imgOut = imageReal<double>(aryOut, img.shape) / N;
 
     fftw_free(in);
@@ -429,51 +425,41 @@ imageReal<double> ifft2R(const imageComplex &img)
 imageComplex fftShift2(const imageComplex &img)
 {
     imageComplex imgOut = imageComplex(img.shape);
-    for (int j = 0; j < img.shape[1]; ++j)
-    {
-        for (int i = 0; i < img.shape[0] / 2; ++i)
-        {
-            double *value = img.get(i + img.shape[0] / 2, j);
-            imgOut.set(i, j, value);
-            delete[] value;
-        }
-        for (int i = img.shape[0] / 2; i < img.shape[0]; ++i)
-        {
-            double *value = img.get(i - img.shape[0] / 2, j);
-            imgOut.set(i, j, value);
-            delete[] value;
-        }
-    }
-    imageComplex imgTemp = imgOut.copy();
-    for (int i = 0; i < img.shape[0]; ++i)
-    {
-        for (int j = 0; j < img.shape[1] / 2; ++j)
-        {
-            double *value = imgTemp.get(i, j + img.shape[1] / 2);
-            imgOut.set(i, j, value);
-            delete[] value;
-        }
-        for (int j = img.shape[1] / 2; j < img.shape[1]; ++j)
-        {
-            double *value = imgTemp.get(i, j - img.shape[1] / 2);
-            imgOut.set(i, j, value);
-            delete[] value;
-        }
-    }
+    int d0 = img.shape[0] % 2 == 1 ? img.shape[0] / 2 + 1 : img.shape[0] / 2;
+    int d1 = img.shape[1] % 2 == 1 ? img.shape[1] / 2 + 1 : img.shape[1] / 2;
+    imageComplex img00 = img.get(0, 0, d0, d1);
+    imageComplex img01 = img.get(0, d1, d0, img.shape[1] - d1);
+    imageComplex img10 = img.get(d0, 0, img.shape[0] - d0, d1);
+    imageComplex img11 = img.get(d0, d1, img.shape[0] - d0, img.shape[1] - d1);
+    imgOut.set(img.shape[0] - d0, img.shape[1] - d1, img00);
+    imgOut.set(img.shape[0] - d0, 0, img01);
+    imgOut.set(0, img.shape[1] - d1, img10);
+    imgOut.set(0, 0, img11);
     return imgOut;
 }
 
 imageComplex ifftShift2(const imageComplex &img)
 {
-    return fftShift2(img);
+    imageComplex imgOut = imageComplex(img.shape);
+    int d0 = img.shape[0] % 2 == 1 ? img.shape[0] / 2 + 1 : img.shape[0] / 2;
+    int d1 = img.shape[1] % 2 == 1 ? img.shape[1] / 2 + 1 : img.shape[1] / 2;
+    imageComplex img00 = img.get(0, 0, img.shape[0] - d0, img.shape[1] - d1);
+    imageComplex img01 = img.get(img.shape[0] - d0, 0, d0, img.shape[1] - d1);
+    imageComplex img10 = img.get(0, img.shape[1] - d1, img.shape[0] - d0, d1);
+    imageComplex img11 = img.get(img.shape[0] - d0, img.shape[1] - d1, d0, d1);
+    imgOut.set(d0, d1, img00);
+    imgOut.set(0, d1, img01);
+    imgOut.set(d0, 0, img10);
+    imgOut.set(0, 0, img11);
+    return imgOut;
 }
 
 imageComplex fft2Half(const imageReal<double> &img)
 {
-    int N = img.shape[0] * img.shape[1];
-    int width = std::ceil(img.shape[1] / 2.0) + 1;
+    size_t N = static_cast<size_t>(img.shape[0]) * img.shape[1];
+    int width = img.shape[1] / 2 + 1;
     int shapeOut[2] = {img.shape[0], width};
-    int N2 = shapeOut[0] * shapeOut[1];
+    size_t N2 = static_cast<size_t>(shapeOut[0]) * shapeOut[1];
     double *in;
     fftw_complex *out;
     fftw_plan p;
@@ -481,7 +467,7 @@ imageComplex fft2Half(const imageReal<double> &img)
     in = static_cast<double *>(fftw_malloc(sizeof(double) * N));
     out = static_cast<fftw_complex *>(fftw_malloc(sizeof(fftw_complex) * N2));
 
-    if ((in == nullptr) || (out == nullptr))
+    if (in == nullptr or out == nullptr)
     {
         throw baseException("Error: Insufficient available memory for FFT!");
     }
@@ -495,7 +481,7 @@ imageComplex fft2Half(const imageReal<double> &img)
         fftw_destroy_plan(p);
     }
 
-    arrayComplex aryOut = arrayComplex(out, N2) / N;
+    arrayComplex aryOut = arrayComplex(out, N2) / static_cast<double>(N);
     imageComplex imgOut = imageComplex(aryOut, shapeOut);
 
     fftw_free(in);
@@ -503,12 +489,12 @@ imageComplex fft2Half(const imageReal<double> &img)
     return imgOut;
 }
 
-imageReal<double> ifft2Half(const imageComplex &img)
+imageReal<double> ifft2Half(const imageComplex &img, int originLength)
 {
-    int N = img.shape[0] * img.shape[1];
-    int width = (img.shape[1] - 1) * 2;
+    size_t N = static_cast<size_t>(img.shape[0]) * img.shape[1];
+    int width = originLength % 2 == 1 ? 2 * img.shape[1] - 1 : 2 * (img.shape[1] - 1);
     int shapeOut[2] = {img.shape[0], width};
-    int N2 = shapeOut[0] * shapeOut[1];
+    size_t N2 = static_cast<size_t>(shapeOut[0]) * shapeOut[1];
     fftw_complex *in;
     double *out;
     fftw_plan p;
@@ -516,14 +502,14 @@ imageReal<double> ifft2Half(const imageComplex &img)
     in = static_cast<fftw_complex *>(fftw_malloc(sizeof(fftw_complex) * N));
     out = static_cast<double *>(fftw_malloc(sizeof(double) * N2));
 
-    if ((in == nullptr) || (out == nullptr))
+    if (in == nullptr or out == nullptr)
     {
         throw baseException("Error: Insufficient available memory for FFT!");
     }
     else
     {
         p = fftw_plan_dft_c2r_2d(shapeOut[0], shapeOut[1], in, out, FFTW_ESTIMATE);
-        for (int i = 0; i < N; ++i)
+        for (size_t i = 0; i < N; ++i)
         {
             double *temp = img.data[i];
             in[i][0] = temp[0];
@@ -536,7 +522,6 @@ imageReal<double> ifft2Half(const imageComplex &img)
     }
 
     arrayReal<double> aryOut = arrayReal<double>(out, N2);
-
     imageReal<double> imgOut = imageReal<double>(aryOut, shapeOut);
 
     fftw_free(in);

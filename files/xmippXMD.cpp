@@ -11,27 +11,23 @@
 
 #include "xmippXMD.h"
 
-stackReal<float> readXMD(const std::string &path, std::vector<std::string> &info)
-{
+stackReal<double> readXMD(const std::string &path, std::vector<std::string> &info) {
     std::ifstream in;
     in.open(path, std::ios::in);
     if (!in)
-        throw baseException("Error: Unable to open txt file!");
+        throw baseException("Error: Unable to open txt files!");
     std::string line;
     std::vector<std::vector<std::string>> r;
     int row = 0;
-    while (getline(in, line))
-    {
-        if (row < 5)
-        {
+    while (getline(in, line)) {
+        if (row < 5) {
             ++row;
             continue;
         }
         std::istringstream sin(line);
         std::vector<std::string> fields;
         std::string field;
-        while (getline(sin, field, '@'))
-        {
+        while (getline(sin, field, '@')) {
             fields.emplace_back(field);
         }
         if (fields.size() != 2)
@@ -41,20 +37,18 @@ stackReal<float> readXMD(const std::string &path, std::vector<std::string> &info
     }
 
     in.close();
-    int sliceNumber = r.size();
+    int sliceNumber = static_cast<int>(r.size());
     std::set<std::string> stkNames;
-    for (int i = 0; i < sliceNumber; ++i)
-    {
+    for (int i = 0; i < sliceNumber; ++i) {
         std::vector<std::string> piece = r[i];
         stkNames.insert(piece[1]);
     }
 
-    stackReal<float> stks[stkNames.size()];
+    stackReal<double> stks[stkNames.size()];
 
     std::set<std::string>::iterator iter;
     int ii;
-    for (ii = 0, iter = stkNames.begin(); ii < stkNames.size(); ++ii, ++iter)
-    {
+    for (ii = 0, iter = stkNames.begin(); ii < stkNames.size(); ++ii, ++iter) {
         mrcFile mrc = mrcFile();
         std::string name = *iter;
         if (name[name.length() - 1] == ' ')
@@ -63,63 +57,53 @@ stackReal<float> readXMD(const std::string &path, std::vector<std::string> &info
         stks[ii] = mrc.data;
     }
 
-    imageReal<float> imgStk[sliceNumber];
-    for (int i = 0; i < sliceNumber; ++i)
-    {
+    imageReal<double> imgStk[sliceNumber];
+    for (int i = 0; i < sliceNumber; ++i) {
         std::vector<std::string> piece = r[i];
         int index = atoi(piece[0].c_str()) - 1;
         std::string stkName = piece[1];
-        for (ii = 0, iter = stkNames.begin(); ii < stkNames.size(); ++ii, ++iter)
-        {
-            if (stkName == *iter)
-            {
+        for (ii = 0, iter = stkNames.begin(); ii < stkNames.size(); ++ii, ++iter) {
+            if (stkName == *iter) {
                 imgStk[i] = stks[ii].pieceGet(index);
                 break;
             }
         }
     }
 
-    stackReal<float> final = image2Stack(imgStk, sliceNumber);
+    stackReal<double> final = image2Stack(imgStk, sliceNumber);
     return final;
 }
 
-std::string zfill(const std::string &number, int length)
-{
+std::string zfill(const std::string &number, int length) {
     std::string ss = number;
-    while (ss.size() < length)
-    {
-        ss = "0" + ss;
+    while (ss.size() < length) {
+        ss.insert(0, "0");
     }
     return ss;
 }
 
-void generateInfo(const std::string &path, int number, std::vector<std::string> &info)
-{
-    for (int i = 1; i <= number; ++i)
-    {
+void generateInfo(const std::string &path, int number, std::vector<std::string> &info) {
+    for (int i = 1; i <= number; ++i) {
         std::string index = zfill(std::to_string(i), 6);
-        info.emplace_back(index + '@' + path);
+        info.emplace_back(index.append("@" + path));
     }
 }
 
-void writeXMD(const std::vector<std::string> &info, const std::string &name)
-{
+void writeXMD(const std::vector<std::string> &info, const std::string &name) {
     std::string path = name + "_alignment.xmd";
-    std::ofstream outFile(path, std::ios::out);
-    outFile << "# XMIPP_STAR_1 * " << std::endl;
-    outFile << "# " << std::endl;
-    outFile << "data_noname" << std::endl;
-    outFile << "loop_" << std::endl;
-    outFile << " _image" << std::endl;
-    outFile << " _shiftX" << std::endl;
-    outFile << " _shiftY" << std::endl;
-    outFile << " _anglePsi" << std::endl;
-    outFile << " _flip" << std::endl;
-    outFile << " _maxCC" << std::endl;
-    for (int i = 0; i < info.size(); ++i)
-    {
-        std::string line = info[i];
-        outFile << line << std::endl;
+    std::ofstream fout(path, std::ios::out);
+    fout << "# XMIPP_STAR_1 * " << std::endl;
+    fout << "# " << std::endl;
+    fout << "data_noname" << std::endl;
+    fout << "loop_" << std::endl;
+    fout << " _image" << std::endl;
+    fout << " _shiftX" << std::endl;
+    fout << " _shiftY" << std::endl;
+    fout << " _anglePsi" << std::endl;
+    fout << " _flip" << std::endl;
+    fout << " _maxCC" << std::endl;
+    for (const auto &line: info) {
+        fout << line << std::endl;
     }
-    outFile.close();
+    fout.close();
 }

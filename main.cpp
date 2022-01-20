@@ -11,14 +11,14 @@
 
 #include <iostream>
 #include <map>
-#include "mrcFile.h"
+#include "mrc.h"
 #include "image2D.h"
-#include "alignFFT.h"
+#include "align.h"
 #include <ctime>
 #include "matrix.h"
 #include "xmippXMD.h"
 #include "noise.h"
-#include "alignmentEvaluation.h"
+#include "alignEvaluation.h"
 
 using namespace std;
 
@@ -173,7 +173,6 @@ bool getParams(int argc, char *argv[], map<string, string> &params)
 /// Though some xmd files are supported, it is strongly suggested to convert input data into MRC format.
 /// When estimation of filter's parameters is not accurate, manually fine tuning might help.
 /// The source code is compiled into RELEASE version by default as specified in CMakeLists.txt. You may change it if DEBUG purpose is needed.
-/// This program temporally uses an INT variable to store the whole size of data (number_of_images * width * height). Then it might crash when the data size is too big. Consider using the BIGDATA version in such cases.
 /// If you would like to look into the code and want to run the program with less RAM, you may change "stackReal" in code to "fileStack" which would make use of the disk and greatly reduce the demand for RAM. Such change also helps with the big data size problem.
 /// Evaluation functions are provided in 'evaluation' folder with proper comments.
 int main(int argc, char *argv[])
@@ -211,6 +210,8 @@ int main(int argc, char *argv[])
 
         std::istringstream sin(pathIn);
         std::vector<std::string> fields;
+        if (pathIn[0] == '.')
+            fields.emplace_back(".");
         std::string field;
         while (getline(sin, field, '.'))
         {
@@ -219,15 +220,19 @@ int main(int argc, char *argv[])
 
         std::istringstream sin2(pathOut);
         std::vector<std::string> fields2;
+        if (pathOut[0] == '.')
+            fields2.emplace_back(".");
         std::string field2;
         while (getline(sin2, field2, '.'))
         {
             fields2.emplace_back(field2);
         }
 
-        std::string name = fields2[0];
+        std::string name;
+        for (int i = 0; i < fields2.size() - 1; ++i)
+            name += fields2[i];
 
-        stackReal<float> data;
+        stackReal<double> data;
         vector<string> info;
         /// "xmd" file for certain XMIPP format. Again, MRC file is strongly recommended.
         if (fields[fields.size() - 1] == "xmd")
@@ -274,7 +279,7 @@ int main(int argc, char *argv[])
             string nameMethod = params["-m"];
             clock_t st, et;
             st = clock();
-            imageReal<float> ref;
+            imageReal<double> ref;
             bool fineFlag;
             if (params.count("-f") == 0)
                 fineFlag = false;
@@ -298,7 +303,7 @@ int main(int argc, char *argv[])
                 int width;
                 if (params.count("-wh") == 0)
                 {
-                    stackReal<float> temp = data.pieces(0, int(data.shape[0] / 10));
+                    stackReal<double> temp = data.pieces(0, int(data.shape[0] / 10));
                     width = circleEstimatePeak(temp, fineFlag);
                     cout << "Estimated high-pass width: " << width << endl;
                 }
@@ -332,7 +337,7 @@ int main(int argc, char *argv[])
                     ref = mrcRef.data.pieceGet(0);
                 }
 
-                stackReal<float> stkBackup;
+                stackReal<double> stkBackup;
                 if (XMIPP)
                     stkBackup = data;
 
@@ -347,7 +352,7 @@ int main(int argc, char *argv[])
             else if (nameMethod == "MD")
             {
                 int outWidth, inWidth;
-                float th;
+                double th;
 
                 if (params.count("-wh") == 0)
                 {
@@ -371,7 +376,7 @@ int main(int argc, char *argv[])
 
                 if (params.count("-wl") == 0)
                 {
-                    stackReal<float> temp = data.pieces(0, int(data.shape[0] / 10));
+                    stackReal<double> temp = data.pieces(0, int(data.shape[0] / 10));
                     outWidth = circleEstimateShape(temp, inWidth, th, fineFlag);
                     cout << "Estimated low-pass width: " << outWidth << endl;
                 }
@@ -405,7 +410,7 @@ int main(int argc, char *argv[])
                     ref = mrcRef.data.pieceGet(0);
                 }
 
-                stackReal<float> stkBackup;
+                stackReal<double> stkBackup;
                 if (XMIPP)
                     stkBackup = data;
 
@@ -443,7 +448,7 @@ int main(int argc, char *argv[])
                     ref = mrcRef.data.pieceGet(0);
                 }
 
-                stackReal<float> stkBackup;
+                stackReal<double> stkBackup;
                 if (XMIPP)
                     stkBackup = data;
 
@@ -459,7 +464,7 @@ int main(int argc, char *argv[])
                 throw baseException("Error: Unsupported method type! Use -h to see commandline instructions.");
 
             mrcFile mrc_new = mrcFile();
-            stackReal<float> stk = image2Stack(ref);
+            stackReal<double> stk = image2Stack(ref);
             mrc_new.setData(stk);
             mrc_new.write(name + "_ref.mrcs");
             mrc_new.setData(data);
