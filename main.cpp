@@ -144,7 +144,7 @@ bool getParams(int argc, char *argv[], map<string, string> &params)
         }
         else if (str == "-x")
         {
-            params.insert(pair<string, string>("-f", argv[i + 1]));
+            params.insert(pair<string, string>("-x", argv[i + 1]));
             i += 1;
         }
         else if (str == "-u")
