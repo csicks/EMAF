@@ -35,8 +35,8 @@
 
 ## Others
 - Please refer to http://www.csbio.sjtu.edu.cn/bioinf/EMAF/ for used datasets and more information.
-- All code is provided for research purpose and without any warranty. If you use  code or ideas from this project for your research, please cite our paper:
-  ```
+- All code is provided for research purpose and without any warranty. If you use code or ideas from this project for your research, please cite our paper:
+  ```bibtex
   @Article{Chen2021a,
   author    = {Chen, Yu-Xuan and Xie, Rui and Yang, Yang and He, Lin and Feng, Dagan and Shen, Hong-Bin},
   journal   = {J. Chem. Inf. Model.},
