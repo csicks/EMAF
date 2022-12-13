@@ -34,6 +34,10 @@
   5. For real GroEL datasets, EMAF-MD with low pass filter width `s/10` is suggested.
   6. For real EMPIAR 10398 datasets, EMAF-MD with low pass filter width `s/20` is suggested.
 
+## License
+- EMAF is licensed under the GNU General Public License v3.0; you may not use this file except in compliance with the License. See file LICENSE for details.
+- All materials are made available under the terms of the Creative Commons Attribution-NonCommercial 4.0 International Public License (CC BY-NC 4.0) license. You can find details at: https://creativecommons.org/licenses/by-nc/4.0/legalcode 
+
 ## Others
 - Please refer to http://www.csbio.sjtu.edu.cn/bioinf/EMAF/ for used datasets and more information.
 - All code is provided for research purpose and without any warranty. If you use code or ideas from this project for your research, please cite our paper:
